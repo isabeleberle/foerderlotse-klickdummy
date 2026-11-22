@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FörderLotse · Klick-Dummy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+ --side:#0E1B14;--sideT:#A9BAB0;--sideA:#1D3327;--sideL:#2A4235;--lime:#B6F36B;
+ --canvas:#F4F6F4;--card:#FFFFFF;--line:#E1E7E3;--ink:#0B1410;--mut:#55645C;
+ --pri:#1F8A4C;--priD:#17693A;--priT:#E6F4EC;--amber:#A84B07;--amberT:#FEF3C7;--red:#C02020;--redT:#FEE4E2;
+ --ki:#5543BE;--kiT:#EEEBFB;--rule:#0B6E82;--ruleT:#E3F3F6;
+ --r:14px;--sh:0 1px 2px rgba(11,20,16,.05),0 8px 24px rgba(11,20,16,.06);
+}
+html{font-size:16px}
+html.big{font-size:18.5px}
+html.big #app{grid-template-columns:310px 1fr}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--canvas);line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.num{font-variant-numeric:tabular-nums}
+abbr[title]{text-decoration:underline dotted 1px;text-underline-offset:3px;cursor:help}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px;border-radius:6px}
+.muted{color:var(--mut)} .small{font-size:.875rem} .xs{font-size:.78rem}
+h1{font-size:1.85rem;letter-spacing:-.03em;line-height:1.15;font-weight:700}
+h2{font-size:1.2rem;letter-spacing:-.015em;font-weight:650}
+h3{font-size:1rem;font-weight:650}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.nowrap{flex-wrap:nowrap}
+.stack{display:flex;flex-direction:column;gap:1rem}.stack.s{gap:.5rem}
+.grid{display:grid;gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.25rem}
+.card.flush{padding:0;overflow:hidden}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.6rem 1.05rem;border-radius:10px;background:var(--ink);color:#fff;font-weight:600;font-size:.95rem;white-space:nowrap}
+.btn:hover{background:#22322a}
+.btn.pri{background:var(--pri)}.btn.pri:hover{background:var(--priD)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.ghost:hover{background:#F1F4F2}
+.btn.sm{min-height:36px;padding:.4rem .8rem;font-size:.85rem;border-radius:8px}
+.btn.lime{background:var(--lime);color:var(--side)}
+.btn svg{width:18px;height:18px}
+.link{color:var(--pri);font-weight:600;text-decoration:none}.link:hover{text-decoration:underline}
+.tag{display:inline-flex;align-items:center;gap:.3rem;border-radius:6px;padding:.12rem .5rem;font-size:.78rem;font-weight:600;white-space:nowrap}
+.tag.ok{background:var(--priT);color:var(--pri)}.tag.warn{background:var(--amberT);color:var(--amber)}.tag.crit{background:var(--redT);color:var(--red)}
+.tag.plain{background:#EEF1EF;color:var(--mut)}.tag.demo{background:#FFF4C2;color:#6B5200}.tag.ki{background:var(--kiT);color:var(--ki)}.tag.rule{background:var(--ruleT);color:var(--rule)}.tag.dark{background:var(--ink);color:#fff}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.dot.r{background:var(--red)}.dot.a{background:#D97706}.dot.g{background:var(--pri)}.dot.n{background:#A3B0A8}
+/* Herkunft */
+.orig{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--mut);border-top:1px solid var(--line);padding-top:.65rem;margin-top:.2rem}
+.orig .who{display:inline-flex;align-items:center;gap:.3rem;font-weight:600}
+.orig .who svg{width:15px;height:15px}
+.orig.rule .who{color:var(--rule)}.orig.ki .who{color:var(--ki)}.orig.undec .who{color:var(--amber)}
+.orig .src{color:var(--ink)}
+.orig button{color:var(--pri);font-weight:600;font-size:.8rem}
+/* Login */
+#login{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
+.lg-art{background:var(--side);color:#fff;padding:3rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.lg-art h1{font-size:2.9rem;max-width:12ch;line-height:1.05}
+.lg-art p{color:var(--sideT);max-width:42ch;font-size:1.05rem}
+.furrows{position:absolute;right:-80px;bottom:-60px;width:520px;opacity:.9}
+.lg-form{display:grid;place-items:center;padding:2rem}
+.lg-form form{width:min(400px,100%);display:flex;flex-direction:column;gap:1rem}
+label.f{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:.9rem}
+.inp{width:100%;border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem;background:#fff;min-height:46px}
+.inp:focus{outline:2px solid var(--pri);border-color:var(--pri)}
+/* Shell */
+#app{display:none;min-height:100vh;grid-template-columns:268px 1fr}
+#side{background:var(--side);color:var(--sideT);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:1.1rem .85rem;gap:.25rem;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:.6rem;padding:.2rem .5rem 1rem;color:#fff;font-weight:650;font-size:1.2rem;letter-spacing:-.03em}
+.brand svg{width:32px;height:32px;flex:none}
+.qs{display:flex;align-items:center;gap:.55rem;border:1px solid var(--sideL);background:#16271E;border-radius:10px;padding:.55rem .7rem;color:var(--sideT);margin-bottom:.6rem;width:100%;text-align:left}
+.qs svg{width:17px;height:17px;flex:none}
+.qs kbd{margin-left:auto;font:inherit;font-size:.72rem;border:1px solid var(--sideL);border-radius:5px;padding:0 .35rem}
+.ngrp{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:#6F8578;padding:.85rem .7rem .3rem;font-weight:600}
+.nav a{display:flex;align-items:center;gap:.7rem;padding:.6rem .7rem;border-radius:10px;text-decoration:none;color:var(--sideT);font-weight:500;font-size:.95rem}
+.nav a svg{width:19px;height:19px;flex:none}
+.nav a:hover{background:#16271E;color:#fff}
+.nav a.on{background:var(--sideA);color:#fff;font-weight:600}
+.nav a.on svg{color:var(--lime)}
+.nav a .bd{margin-left:auto;font-size:.72rem;font-weight:650;border-radius:99px;padding:.05rem .45rem;background:var(--sideL);color:var(--sideT)}
+.nav a .bd.lime{background:var(--lime);color:var(--side)}.nav a .bd.red{background:#E5484D;color:#fff}
+.sfoot{margin-top:auto;display:flex;flex-direction:column;gap:.3rem;padding-top:1rem}
+.farm{background:#16271E;border-radius:12px;padding:.8rem;text-align:left;width:100%}
+.farm b{color:#fff;display:block;font-size:.88rem;line-height:1.3}
+main{min-width:0;padding:1.75rem 2.25rem 5rem;max-width:1360px;width:100%}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.top .sub{color:var(--mut);margin-top:.2rem}
+.iconbtn{position:relative;width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.iconbtn svg{width:20px;height:20px}
+.iconbtn .cnt{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:.7rem;font-weight:700;border-radius:99px;padding:0 .35rem;border:2px solid var(--canvas)}
+/* Übersicht */
+.next{display:grid;grid-template-columns:auto 1fr auto;gap:1.1rem;align-items:center;background:var(--side);color:#fff;border-radius:18px;padding:1.3rem 1.5rem;margin-bottom:1rem}
+.next .cal{width:62px;height:66px;border-radius:14px;background:#E5484D;display:grid;place-items:center;text-align:center;line-height:1}
+.next .cal b{font-size:1.6rem}.next .cal span{font-size:.7rem;letter-spacing:.12em;font-weight:700}
+.next .ov{color:var(--lime);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.next h2{font-size:1.35rem;margin:.15rem 0}
+.next p{color:var(--sideT);font-size:.92rem}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.1rem;text-align:left;width:100%}
+.kpi:hover{border-color:#C9D3CD}
+.kpi .v{font-size:1.85rem;font-weight:700;letter-spacing:-.04em;line-height:1.2}
+.tl{position:relative;height:110px;margin:.5rem .3rem 0}
+.tl .base{position:absolute;left:0;right:0;top:46px;height:6px;border-radius:3px;background:#E7ECE9}
+.tl .done{position:absolute;left:0;top:46px;height:6px;border-radius:3px;background:var(--ink)}
+.tl .today{position:absolute;top:20px;width:2px;height:58px;background:var(--ink)}
+.tl .today span{position:absolute;top:-18px;right:6px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.tl .m{position:absolute;top:84px;font-size:.75rem;color:var(--mut)}
+.tl .mk{position:absolute;top:40px;width:18px;height:18px;border-radius:50%;border:3px solid #fff;transform:translateX(-50%);box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.tl .mk:hover{transform:translateX(-50%) scale(1.25)}
+.tl .mk.r{background:var(--red)}.tl .mk.a{background:#D97706}.tl .mk.g{background:var(--pri)}.tl .mk.x{background:#fff;border:2px dashed #9AA8A0}
+.tl .ml{position:absolute;font-size:.7rem;font-weight:650;transform:translateX(-50%);white-space:nowrap}
+.two{display:grid;grid-template-columns:1fr 380px;gap:1rem;align-items:start}
+.todo{display:flex;gap:.85rem;align-items:center;padding:.85rem 1.1rem;border-top:1px solid var(--line);text-align:left;width:100%}
+.todo:hover{background:#FAFBFA}
+.cb{width:22px;height:22px;border-radius:7px;border:1.6px solid #A9B6AF;display:grid;place-items:center;flex:none;background:#fff}
+.cb svg{width:14px;height:14px;opacity:0}
+.todo.isdone .cb,.chk.isdone .cb{background:var(--pri);border-color:var(--pri)}
+.todo.isdone .cb svg,.chk.isdone .cb svg{opacity:1;color:#fff}
+.todo.isdone .tt{text-decoration:line-through;color:var(--mut)}
+.due{font-weight:650;font-size:.82rem;border-radius:7px;padding:.2rem .5rem;white-space:nowrap}
+.due.r{background:var(--redT);color:var(--red)}.due.a{background:var(--amberT);color:var(--amber)}.due.g{background:#EEF1EF;color:var(--mut)}
+.feed{display:flex;gap:.8rem;padding:.9rem 1.1rem;border-top:1px solid var(--line);text-align:left;width:100%}
+.feed .bar{width:3px;border-radius:2px;flex:none}
+/* Suche */
+.split{display:grid;grid-template-columns:minmax(330px,440px) 1fr;gap:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;min-height:640px}
+.list{border-right:1px solid var(--line);padding:1.1rem;display:flex;flex-direction:column;gap:.7rem;background:#FCFDFC}
+.search{display:flex;align-items:center;gap:.5rem;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:0 .4rem 0 .8rem;min-height:50px}
+.search:focus-within{border-color:var(--pri)}
+.search input{border:0;outline:0;flex:1;min-width:0;font-size:1rem;background:transparent;padding:.6rem 0}
+.search svg{width:19px;height:19px;color:var(--mut);flex:none}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.32rem .65rem;font-size:.84rem;font-weight:550;min-height:34px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grp{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:650;margin-top:.4rem;display:flex;justify-content:space-between}
+.res{display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;padding:.8rem .9rem;text-align:left;width:100%}
+.res:hover{border-color:#BFCBC4}
+.res.on{border:1.5px solid var(--pri);background:var(--priT)}
+.res b{display:block;font-weight:600;line-height:1.3}
+.res .amt{font-weight:650;white-space:nowrap}
+.res mark{background:#FFF1B8;border-radius:3px;padding:0 .15em;color:inherit}
+.detail{padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:1rem;min-width:0}
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.check{display:flex;gap:.6rem;align-items:flex-start;padding:.3rem 0}
+.check i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:.78rem}
+.check i.y{background:var(--priT);color:var(--pri)}.check i.q{background:var(--amberT);color:var(--amber)}.check i.n{background:var(--redT);color:var(--red)}
+.box{border-radius:14px;padding:1rem 1.1rem}
+.box.ki{background:var(--kiT)}.box.undec{background:var(--amberT)}.box.plain{background:#F3F6F4}.box.sun{background:#FFF7D6}.box.crit{background:var(--redT)}.box.rule{background:var(--ruleT)}
+.weigh{width:100%;border-collapse:collapse;font-size:.9rem}
+.weigh td{padding:.42rem 0;border-bottom:1px solid rgba(0,0,0,.07)}.weigh td:last-child{text-align:right;font-weight:600}
+.sketch{width:100%;max-width:560px;height:auto;border-radius:12px;background:#EEF3EF;display:block}
+.tray{position:sticky;bottom:12px;margin-top:auto;background:var(--ink);color:#fff;border-radius:12px;padding:.6rem .6rem .6rem .9rem;display:none;justify-content:space-between;align-items:center;gap:.6rem}
+.tray.in{display:flex}
+/* Wizard */
+.wiz{max-width:760px}
+.pbar{height:6px;border-radius:3px;background:#E3E8E4;overflow:hidden}.pbar i{display:block;height:100%;background:var(--pri);border-radius:3px}
+.opt{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:1rem 1.1rem;background:#fff;cursor:pointer;min-height:64px}
+.opt:has(input:checked){border-color:var(--pri);background:var(--priT)}
+.opt input{width:20px;height:20px;accent-color:var(--pri)}
+.opt:has(input:disabled){opacity:.6;cursor:not-allowed}
+.doc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.6rem;box-shadow:var(--sh)}
+.doc h3{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);margin:1.1rem 0 .3rem}
+.frow{display:grid;grid-template-columns:1fr 1.3fr auto;gap:.8rem;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--line)}
+.frow b{font-weight:600}
+/* Meine */
+.prog{background:#fff;border:1px solid var(--line);border-radius:14px}
+.prog summary{list-style:none;display:grid;grid-template-columns:1fr auto auto;gap:.8rem;align-items:center;padding:1rem 1.2rem;cursor:pointer}
+.prog summary::-webkit-details-marker{display:none}
+.prog .body{display:grid;grid-template-columns:1.2fr 1fr;gap:1.2rem;padding:0 1.2rem 1.2rem}
+.steps{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.steps li{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center}
+.sd{width:12px;height:12px;border-radius:50%;border:2px solid #A9B6AF}
+.sd.done{background:var(--pri);border-color:var(--pri)}.sd.open{border-color:#D97706}.sd.late{background:var(--red);border-color:var(--red)}
+/* Tabelle */
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:650;padding:.6rem .8rem;border-bottom:1px solid var(--line);background:#FAFBFA}
+table.t td{padding:.75rem .8rem;border-bottom:1px solid var(--line);vertical-align:top}
+table.t tr.warnrow td{background:#FFFAEB}
+.tw{overflow-x:auto}
+.ring{--p:60;width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--pri) calc(var(--p)*1%),#E3E8E4 0);display:grid;place-items:center;flex:none}
+.ring b{width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.05rem}
+.drop{border:2px dashed #C3CEC8;border-radius:16px;padding:1.6rem;text-align:center;background:#FAFBFA}
+.paper{background:#FFFEFA;border:1px solid #E6E1D2;border-radius:6px;padding:1.6rem 1.8rem;font-family:Georgia,"Times New Roman",serif;font-size:.93rem;line-height:1.6;box-shadow:var(--sh)}
+.paper .hd{font-family:Geist,sans-serif;font-size:.78rem;color:var(--mut);margin-bottom:1rem}
+.mail{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem;white-space:pre-wrap;font-size:.93rem;line-height:1.6}
+.toggle{position:relative;width:46px;height:26px;border-radius:99px;background:#C9D2CD;flex:none;transition:.15s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.15s}
+.toggle.on{background:var(--pri)}.toggle.on::after{left:23px}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 0;border-top:1px solid var(--line)}
+code.lnk{display:block;background:#F3F6F4;border:1px solid var(--line);border-radius:10px;padding:.7rem .8rem;font-size:.85rem;word-break:break-all}
+/* Chat */
+.chatw{display:grid;grid-template-columns:1fr 360px;gap:1rem;align-items:start}
+.msgs{display:flex;flex-direction:column;gap:.8rem;min-height:380px;max-height:62vh;overflow:auto;padding:1.1rem}
+.msg{max-width:84%;border-radius:16px;padding:.8rem 1rem}
+.msg.u{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:5px}
+.msg.a{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;display:flex;flex-direction:column;gap:.55rem}
+.typing i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#9AA8A0;margin-right:3px;animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{opacity:.3;transform:translateY(-3px)}}
+.cform{display:flex;gap:.5rem;border-top:1px solid var(--line);padding:.8rem}
+/* Saison */
+.phase{display:grid;grid-template-columns:120px 1fr;gap:1.2rem;padding:1.1rem 0;border-top:1px solid var(--line)}
+.phase.now{background:linear-gradient(90deg,#F3FBE8,transparent 60%);border-radius:12px;padding:1.1rem .9rem;margin:0 -.9rem}
+.phase .pm b{display:block;font-size:1.05rem}
+.chk{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:start;padding:.55rem 0;text-align:left;width:100%}
+.chk .cb{margin-top:2px}
+.chk.isdone .tt{text-decoration:line-through;color:var(--mut)}
+.countdown{display:flex;align-items:baseline;gap:.5rem}
+.countdown b{font-size:3.2rem;letter-spacing:-.05em;line-height:1}
+/* Overlays */
+.scrim{position:fixed;inset:0;background:rgba(11,20,16,.42);opacity:0;pointer-events:none;transition:.2s;z-index:40}
+.scrim.in{opacity:1;pointer-events:auto}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%);width:min(640px,calc(100vw - 2rem));max-height:86vh;overflow:auto;background:#fff;border-radius:18px;padding:1.5rem;z-index:50;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+.modal.in{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.toast{position:fixed;right:1.4rem;bottom:1.4rem;width:min(390px,calc(100vw - 2rem));background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:14px;padding:1rem 1.1rem;box-shadow:0 20px 50px rgba(0,0,0,.18);z-index:60;transform:translateY(30px);opacity:0;visibility:hidden;transition:.35s cubic-bezier(.2,.9,.3,1.2)}
+.toast.in{transform:none;opacity:1;visibility:visible}
+.snack{position:fixed;left:50%;bottom:1.4rem;transform:translate(-50%,20px);opacity:0;visibility:hidden;background:var(--ink);color:#fff;border-radius:10px;padding:.7rem 1rem;z-index:70;transition:.3s;font-weight:500;font-size:.92rem}
+.snack.in{transform:translate(-50%,0);opacity:1;visibility:visible}
+#tabbar{display:none}
+#fab{position:fixed;right:1.4rem;bottom:1.4rem;z-index:30;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+/* Responsiv */
+@media (max-width:1180px){.two{grid-template-columns:1fr!important}.kpis{grid-template-columns:repeat(2,1fr)}.chatw{grid-template-columns:1fr}.d2{grid-template-columns:1fr}}
+@media (max-width:900px){
+ #app{grid-template-columns:1fr}
+ #side{position:fixed;left:0;top:0;bottom:0;width:286px;z-index:45;transform:translateX(-100%);transition:.25s}
+ #side.open{transform:none}
+ main{padding:1rem 1rem 6.5rem}
+ h1{font-size:1.5rem}
+ .split{grid-template-columns:1fr;min-height:0}
+ .split .detail{display:none}
+ .split.showd .list{display:none}.split.showd .detail{display:flex}
+ .next{grid-template-columns:auto 1fr}.next .act{grid-column:1/-1}
+ #tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--side);padding:.45rem .3rem calc(.55rem + env(safe-area-inset-bottom));z-index:35;justify-content:space-around}
+ #tabbar a{display:flex;flex-direction:column;align-items:center;gap:.15rem;color:var(--sideT);text-decoration:none;font-size:.7rem;font-weight:550;min-width:62px;padding:.3rem}
+ #tabbar a svg{width:23px;height:23px}
+ #tabbar a.on{color:#fff}#tabbar a.on svg{color:var(--lime)}
+ #fab{display:none}
+ #login{grid-template-columns:1fr}.lg-art{min-height:auto;padding:2rem}.lg-art h1{font-size:2.1rem}.furrows{display:none}
+ .prog .body{grid-template-columns:1fr}
+ .phase{grid-template-columns:1fr;gap:.4rem}
+ .frow{grid-template-columns:1fr auto}.frow span{grid-column:1/-1}
+ .toast{bottom:5.5rem}
+ .snack{bottom:5.5rem}
+ .kpis{grid-template-columns:repeat(2,1fr)!important}
+ .top .row .btn{flex:1}
+ .mobhide{display:none!important}
+ .tl .ml{display:none}
+ .tl .m{font-size:.62rem}
+}
+@media (min-width:901px){.deskhide{display:none!important}}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<section id="login">
+ <div class="lg-art">
+  <div class="brand" style="padding:0"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#1D3327"/><path d="M9 29 21 9" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round"/><path d="M15.5 31 27 12" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".7"/><path d="M22 32.5 31.5 17" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".4"/></svg> förderlotse <span class="tag demo" style="margin-left:.4rem">Klick-Dummy</span></div>
+  <div class="stack" style="gap:1.2rem;position:relative;z-index:1">
+   <h1>Förderung finden. Fristen halten. Nachweise im Griff.</h1>
+   <p>Alle Förderungen Ihres Betriebs an einem Ort. Grundlage sind ausschließlich die Unterlagen der Landwirtschaftsverwaltung Sachsen-Anhalt.</p>
+  </div>
+  <p class="xs" style="position:relative;z-index:1">Klick-Dummy zur Masterarbeit. Keine echte Anwendung, keine Datenverarbeitung.</p>
+  <svg class="furrows" viewBox="0 0 400 300" fill="none" aria-hidden="true"><path d="M20 290 190 10" stroke="#B6F36B" stroke-width="22" stroke-linecap="round"/><path d="M110 300 270 40" stroke="#B6F36B" stroke-opacity=".55" stroke-width="22" stroke-linecap="round"/><path d="M200 310 350 70" stroke="#B6F36B" stroke-opacity=".25" stroke-width="22" stroke-linecap="round"/></svg>
+ </div>
+ <div class="lg-form">
+  <form id="loginForm">
+   <div><h1 style="font-size:1.6rem">Anmelden</h1><p class="muted small">Die Testzugangsdaten sind bereits eingetragen.</p></div>
+   <label class="f">E-Mail-Adresse<input class="inp" value="test@agrar-musterhof.example" autocomplete="off"></label>
+   <label class="f">Passwort<input class="inp" type="password" value="demo2026"></label>
+   <div class="box sun small"><b>Testzugang:</b> test@agrar-musterhof.example · demo2026</div>
+   <button class="btn pri" type="submit" style="min-height:50px">Anmelden</button>
+   <p class="xs muted">Die Anmeldung beim Agrarantrag des Landes (ELAISA) bleibt davon getrennt. Diese Plattform reicht nichts bei einer Behörde ein.</p>
+  </form>
+ </div>
+</section>
+
+<!-- APP -->
+<div id="app">
+ <aside id="side">
+  <div class="brand"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#1D3327"/><path d="M9 29 21 9" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round"/><path d="M15.5 31 27 12" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".7"/><path d="M22 32.5 31.5 17" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".4"/></svg> förderlotse</div>
+  <button class="qs" data-a="quick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg> Suchen … <kbd>Strg K</kbd></button>
+  <nav class="nav" id="nav">
+   <div class="ngrp">Überblick</div>
+   <a href="#start" data-v="start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg> Übersicht</a>
+   <a href="#saison" data-v="saison"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4M4 4h12l-2 4 2 4H4"/></svg> Saisonplan <span class="bd lime" id="bdSaison">17 T.</span></a>
+   <div class="ngrp">Förderung</div>
+   <a href="#suche" data-v="suche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg> Förderung finden <span class="bd lime">2 neu</span></a>
+   <a href="#antrag" data-v="antrag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Antrag vorbereiten</a>
+   <a href="#meine" data-v="meine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg> Meine Förderungen <span class="bd">6</span></a>
+   <div class="ngrp">Nachweise und Post</div>
+   <a href="#nachweise" data-v="nachweise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg> Weidetagebuch <span class="bd red" id="bdWt">1</span></a>
+   <a href="#unterlagen" data-v="unterlagen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Unterlagenmappe <span class="bd" id="bdDocs">6/10</span></a>
+   <a href="#post" data-v="post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> Post vom Amt <span class="bd red">2</span></a>
+   <div class="ngrp">Hilfe</div>
+   <a href="#fragen" data-v="fragen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg> Fragen und Anfragen</a>
+  </nav>
+  <div class="sfoot nav">
+   <button class="farm" data-a="go" data-v="profil"><b>Agrargenossenschaft Musterhof eG</b><span class="xs">1.512 ha · ALFF Altmark</span></button>
+   <a href="#einstellungen" data-v="einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Erinnerungen und Kalender</a>
+   <a href="#hinweise" data-v="hinweise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Hinweise zum Klick-Dummy</a>
+   <a href="#" data-a="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg> Abmelden</a>
+  </div>
+ </aside>
+ <main id="view"></main>
+</div>
+<nav id="tabbar" style="display:none">
+ <a href="#start" data-v="start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Übersicht</a>
+ <a href="#suche" data-v="suche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Finden</a>
+ <a href="#nachweise" data-v="nachweise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>Nachweise</a>
+ <a href="#fragen" data-v="fragen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Fragen</a>
+ <a href="#" data-a="menu" data-v="mehr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Mehr</a>
+</nav>
+<button class="btn" id="fab" data-a="go" data-v="fragen" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg> Frage stellen</button>
+<div class="scrim" id="scrim" data-a="close"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="snack" id="snack" role="status"></div>
+<script>
+/* ================= Hilfen ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const IC={home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',flag:'<path d="M4 22V4M4 4h12l-2 4 2 4H4"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',check:'<path d="M20 6 9 17l-5-5"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',arrow:'<path d="M5 12h14M13 5l7 7-7 7"/>',spark:'<path d="M12 3l1.9 5.6 5.6 1.9-5.6 1.9L12 18l-1.9-5.6-5.6-1.9 5.6-1.9z"/>',q:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',rule:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',chev:'<path d="m9 18 6-6-6-6"/>',up:'<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',plus:'<path d="M12 5v14M5 12h14"/>',back:'<path d="M19 12H5M11 19l-7-7 7-7"/>',warn:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',send:'<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const ic=(n,c='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${c?`style="${c}"`:''} aria-hidden="true">${IC[n]}</svg>`;
+const AB={'ÖR':'Öko-Regelung (Teil der Direktzahlungen)','AUKM':'Agrarumwelt- und Klimamaßnahme (Zweite Säule, mehrjährig)','AFP':'Agrarinvestitionsförderungsprogramm','ELAISA':'Antragsprogramm des Landes für den Agrarantrag','ALFF':'Amt für Landwirtschaft, Flurneuordnung und Forsten','HIT':'Herkunftssicherungs- und Informationssystem für Tiere','GVE':'Großvieheinheit: Umrechnung verschiedener Tiere auf eine gemeinsame Größe','GLÖZ':'Standards für den guten landwirtschaftlichen und ökologischen Zustand','KMU':'kleine und mittlere Unternehmen'};
+const ab=k=>`<abbr title="${AB[k]}">${k}</abbr>`;
+const fmt=n=>n.toLocaleString('de-DE');
+const TODAY=118; // 28.04.2026, Tag im Jahr
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function orig(kind,src,sec,demo){const L={rule:['rule','Regelprüfung'],ki:['spark','KI-Erklärung'],undec:['q','Nicht entscheidbar']}[kind];return `<div class="orig ${kind}"><span class="who">${ic(L[0])}${L[1]}</span>${src?`<span>·</span><span class="src">${src}${sec?', '+sec:''}</span><button data-a="excerpt" data-v="${esc(src)}|${esc(sec||'')}">Textstelle öffnen</button>`:''}${demo?`<span class="tag demo">${demo}</span>`:''}</div>`}
+function snack(t){const s=$('#snack');s.textContent=t;s.classList.add('in');clearTimeout(s._t);s._t=setTimeout(()=>s.classList.remove('in'),2400)}
+function modal(h){$('#modal').innerHTML=h;$('#modal').classList.add('in');$('#scrim').classList.add('in');const f=$('#modal').querySelector('button,input,textarea');f&&f.focus()}
+function closeAll(){$('#modal').classList.remove('in');$('#scrim').classList.remove('in');$('#side').classList.remove('open')}
+
+/* ================= Daten (Beispiele) ================= */
+const S={logged:false,ob:0,obDone:false,done:new Set(),pushed:false,picked:new Set(),sel:'or1d',kw:'',flt:'Alle',wz:0,ha:3.3,showD:false,
+ letter:null,reading:false,chatInit:false,big:false,rem:{mail:true,sms:false,push:true,week:true},lead:new Set([14,2]),docTab:'umbau',
+ aq:{to:'ALFF Altmark · Investitionsförderung',topic:'Förderfähigkeit eines Ersatzes',text:'Ist der Kauf eines neuen Hofladers als Ersatz für unseren alten förderfähig? Der neue hat mehr Hubkraft und einen Elektroantrieb.',inc:{name:true,bnr:false,vorhaben:true,angebot:true},draft:false},
+ anfragen:[{t:'Natura-2000-Bestätigung: Reicht die Bestätigung von 2025?',to:'Landkreis, Untere Naturschutzbehörde',st:'Antwort abgelegt',d:'14.04.',ans:'Nein, die Bestätigung ist für jedes Antragsjahr neu einzuholen.'}],
+ extra:[],saisonDone:new Set(['s1','s2','s3','s4','s5','s6'])};
+let DUE=[
+ {id:'n2000',lvl:'r',t:'Natura-2000-Bestätigung beim Landkreis einholen',d:'ÖR 7 · 64 ha · vor dem Sammelantrag',date:'30.04.',doy:120,go:'saison',s:['Merkblatt Öko-Regelungen 2026','ÖR 7']},
+ {id:'sa',lvl:'a',t:'Sammelantrag 2026 in ELAISA einreichen',d:'Direktzahlungen und Öko-Regelungen',date:'15.05.',doy:135,go:'saison',s:['Merkblatt Sammelantrag 2026','Antragsfrist']},
+ {id:'foto',lvl:'a',t:'Fotoauftrag zu Schlag 31 beantworten',d:'Flächenmonitoring · Foto-App des Landes',date:'19.05.',doy:139,go:'post',s:['Mitteilung Flächenmonitoring','']},
+ {id:'anh',lvl:'a',t:'Stellungnahme zur Anhörung Weidetagebuch 2025',d:'Schreiben vom ALFF · Schlag 17',date:'26.05.',doy:146,go:'post',s:['Anhörungsschreiben','']},
+ {id:'aend',lvl:'g',t:'Letzte Änderungen am Sammelantrag',d:'nach den Ergebnissen des Flächenmonitorings',date:'30.09.',doy:273,go:'meine',s:['Merkblatt Sammelantrag 2026','Änderungen']},
+ {id:'wt',lvl:'g',t:'Weidetagebuch Schlag 17 abgeben',d:'AUKM Extensive Beweidung',date:'31.12.',doy:365,go:'nachweise',s:['Merkblatt AUKM','Nachweise']},
+ {id:'zahl',lvl:'g',t:'Zahlungsantrag Güllelager einreichen',d:'AFP · Originalbelege',date:'31.10.',doy:304,go:'unterlagen',s:['Bewilligungsbescheid AFP','Auflagen']}
+];
+const lvlOf=d=>{const n=d.doy-TODAY;return n<=7?'r':n<=30?'a':'g'};
+const inDays=d=>{const n=d.doy-TODAY;return n<=0?'heute':n===1?'morgen':n<=45?`in ${n} Tagen`:`in ${Math.round(n/30)} Monaten`};
+const PROGS=[
+ {n:'Sammelantrag 2026: Direktzahlungen',st:['warn','in Vorbereitung'],bind:'jährlich',steps:[['done','Vorjahresflächen übernommen','März'],['open','Flächen prüfen und Antrag in ELAISA einreichen','15.05.'],['','Änderungen möglich','bis 30.09.']],note:'Die Eingabe erfolgt im Antragsprogramm des Landes. Hier sehen Sie Stand und Fristen.',s:['Merkblatt Sammelantrag 2026',''],go:['saison','Zum Saisonplan']},
+ {n:'Öko-Regelung 2: Anbau vielfältiger Kulturen',st:['ok','läuft'],bind:'jährlich · 1.180 ha Ackerland',steps:[['done','Mindestens fünf Hauptfruchtarten angebaut','erfüllt'],['done','Leguminosen mindestens 10 % (Luzerne 120 ha)','erfüllt'],['open','Im Sammelantrag 2026 erneut ankreuzen','15.05.']],note:'Die Anteile werden aus Ihren Kulturen im Betriebsprofil berechnet.',s:['Merkblatt Öko-Regelungen 2026','ÖR 2']},
+ {n:'Öko-Regelung 7: Bewirtschaftung in Natura-2000-Gebieten',st:['crit','Nachweis offen'],bind:'jährlich · 64 ha',steps:[['late','Bestätigung der Umweltbehörde des Landkreises','30.04.'],['','Im Sammelantrag ankreuzen','15.05.']],note:'Die Bestätigung ist jedes Jahr neu einzuholen, auch wenn die Flächen unverändert im Schutzgebiet liegen.',s:['Merkblatt Öko-Regelungen 2026','ÖR 7'],go:['saison','Zum Saisonplan']},
+ {n:'Agrarumweltmaßnahme (AUKM): Extensive Beweidung',st:['warn','Nachweis läuft'],bind:'Verpflichtung 2024 bis 2028 · Schlag 17 · 12,4 ha',steps:[['done','Verpflichtungsjahr 2025 abgeschlossen','geprüft'],['open','Weidetagebuch 2026 führen','laufend'],['open','Weidetagebuch abgeben','31.12.']],note:'Mehrjährige Verpflichtung. Ein Ausstieg vor 2028 kann zur Rückforderung führen.',s:['Richtlinie AUKM Sachsen-Anhalt','Verpflichtungszeitraum'],go:['nachweise','Weidetagebuch öffnen']},
+ {n:'Herdenschutz: wolfsabweisender Zaun',st:['ok','bewilligt'],bind:'Zweckbindung bis 2030',steps:[['done','Zaun errichtet und abgerechnet','2025'],['','Zaun funktionsfähig halten','laufend']],note:'Antrags- und Bewilligungsbehörde ist das ALFF Anhalt.',s:['Richtlinie Herdenschutz','Zweckbindung']},
+ {n:'Agrarinvestitionsförderung (AFP): Güllelager',st:['ok','bewilligt'],bind:'Durchführung bis 30.11.2026',steps:[['done','Bewilligungsbescheid erhalten','2025'],['open','Vorhaben abschließen','30.11.'],['open','Zahlungsantrag mit Originalbelegen einreichen','31.10.']],note:'Papierverfahren. Der Zahlungsantrag geht an das zuständige ALFF.',s:['Bewilligungsbescheid AFP','Auflagen'],go:['unterlagen','Zur Unterlagenmappe']}
+];
+const F=[
+ {id:'zmk',col:0,cat:['Tierhaltung'],n:'Zahlung für Mutterkühe',amt:'ca. 7.300 €',unit:'im Jahr · rund 85 € je Tier · 86 Tiere',kw:['mutterkuh','mutterkühe','mutterkuhhaltung','rind','rinder','tierhaltung','kälber','tierprämie'],
+  why:[['y','86 Mutterkühe in der HIT-Datenbank gemeldet'],['y','Betrieb gibt keine Kuhmilch ab'],['y','Mindestbestand erreicht']],where:'Betrifft den Tierbestand, nicht einzelne Flächen.',
+  change:'Keine Änderung nötig. Die Tiere müssen im Haltungszeitraum im Betrieb bleiben, Abgänge sind zu melden.',ki:'Die Prämie gibt es für Mutterkühe, wenn der Betrieb keine Milch verkauft. Maßgeblich sind die Tiere, die im Antrag mit Ohrmarke gemeldet sind.',s:['Merkblatt Sammelantrag 2026','Gekoppelte Einkommensstützung']},
+ {id:'or1d',col:0,cat:['Grünland'],n:'Öko-Regelung 1d: Altgrasstreifen',amt:'ca. 3.300 €',unit:'im Jahr · 1.000 €/ha für das erste Prozent',kw:['altgras','altgrasstreifen','grünland','wiese','mahd','öko-regelung','insekten'],sk:'24',
+  why:[['y','Dauergrünland vorhanden (332 ha)'],['y','1 % als Altgrasstreifen möglich (3,3 ha)'],['y','Keine laufende Maßnahme auf Schlag 24']],
+  change:'Keine Änderung im Betrieb nötig. Vorgeschlagen wird ein Streifen am Nordrand von Schlag 24, der ohnehin spät gemäht wird.',ki:'Ein Altgrasstreifen ist ein Teil der Wiese, den Sie bis zum 1. September stehen lassen. Er darf 1 bis 6 % Ihres Dauergrünlands ausmachen. Für das erste Prozent ist die Prämie am höchsten.',s:['Merkblatt Öko-Regelungen 2026','ÖR 1d']},
+ {id:'or5',col:1,cat:['Grünland'],n:'Öko-Regelung 5: Kennarten im Dauergrünland',amt:'ca. 7.100 €',unit:'im Jahr · rund 210 €/ha · 33,6 ha',kw:['kennarten','grünland','wiese','artenreich','extensiv','öko-regelung'],sk:'21',
+  why:[['y','Extensiv genutztes Dauergrünland vorhanden'],['q','Mindestens vier Kennarten je Fläche: noch nicht nachgewiesen'],['y','Kombinierbar mit ÖR 1d auf anderen Teilflächen']],
+  change:'Auf den Schlägen 21 und 24 wären die Kennarten zu erfassen und mit der Foto-App zu belegen. Rechnen Sie mit mehreren Arbeitstagen, weil die Flächen meist mehrfach aufzusuchen sind.',ki:'Gefördert wird artenreiches Grünland. Sie weisen nach, dass auf der Fläche mindestens vier Pflanzenarten aus einer festgelegten Liste wachsen. Auf lange intensiv genutzten Wiesen gelingt das oft nicht.',s:['Merkblatt Öko-Regelungen 2026','ÖR 5']},
+ {id:'or1a',col:1,cat:['Acker'],n:'Öko-Regelung 1a: Brache auf Ackerland',amt:'nach Anteil',unit:'gestaffelt, siehe Merkblatt',demo:true,kw:['brache','acker','stilllegung','nichtproduktiv','blühstreifen','öko-regelung'],sk:'44',
+  why:[['y','Ackerland vorhanden (1.180 ha)'],['q','Mindestens 1 % zusätzliche Brache: derzeit nicht angelegt'],['y','Geeignete Randflächen vorhanden']],
+  change:'Auf Schlag 44 ließen sich 11,8 ha ertragsschwache Randfläche als Brache anlegen. Das entspricht 1 % Ihres Ackerlands. Die Fläche fehlt dann in der Fruchtfolge.',ki:'Sie nehmen einen kleinen Teil Ihres Ackers freiwillig aus der Erzeugung. Die Prämie ist für das erste Prozent am höchsten.',s:['Merkblatt Öko-Regelungen 2026','ÖR 1a']},
+ {id:'afp',col:2,cat:['Investition','Tierhaltung'],n:'AFP: Umbau des Mutterkuhstalls',amt:'20 %',unit:'Zuschuss, in besonderen Fällen bis 50 %',undec:true,kw:['stall','stallbau','stallumbau','investition','bauen','mutterkuh','mutterkuhhaltung','tierwohl','afp','hoflader','maschine'],
+  why:[['y','Landwirtschaftliches Unternehmen mit Sitz in Sachsen-Anhalt'],['q','Umsatzgrenze für KMU: bitte prüfen'],['q','Keine Ersatzinvestition: nicht entscheidbar']],where:'Betrifft den Stall am Hof.',
+  change:'Der Antrag ist vor Baubeginn auf Papier beim ALFF zu stellen, mit Investitionskonzept und Angeboten. Die Unterlagenmappe zeigt, was fehlt.',
+  weigh:[['Mögliche Förderung','20 % der förderfähigen Kosten'],['Eigenanteil','mindestens 80 %'],['Bindung','Zweckbindung über mehrere Jahre'],['Aufwand bis zum Antrag','hoch: Konzept, Angebote, Stellungnahme'],['Offene Frage','Gilt der Umbau als Ersatzinvestition?']],
+  ki:'Die Förderung senkt die Kosten einer Investition, die Sie ohnehin planen. Ob Ihr Umbau förderfähig ist, hängt davon ab, ob er mehr leistet als der bisherige Stall. Das beurteilt das Amt.',s:['AFP-Richtlinie Sachsen-Anhalt','Gegenstand der Förderung']},
+ {id:'hs',col:2,cat:['Investition','Tierhaltung'],n:'Herdenschutz: Zaun für weitere Weideflächen',amt:'Zuschuss',unit:'Höhe laut Richtlinie',demo:true,kw:['wolf','herdenschutz','zaun','weide','weidetiere','mutterkuh','mutterkuhhaltung'],sk:'21',
+  why:[['y','Weidehaltung im Wolfsgebiet'],['y','Ein geförderter Zaun vorhanden, weitere Flächen ungeschützt'],['q','Förderfähigkeit für Rinder: beim ALFF Anhalt erfragen']],
+  change:'Für die Schläge 21 und 24 (33,6 ha) wäre ein wolfsabweisender Festzaun nötig. Aufbau und Pflege binden Arbeitszeit über die gesamte Zweckbindung.',
+  weigh:[['Mögliche Förderung','Zuschuss zur Anschaffung'],['Eigenanteil','Arbeitszeit für Aufbau und Pflege'],['Bindung','Zweckbindung mehrere Jahre'],['Aufwand bis zum Antrag','mittel'],['Offene Frage','Sind Rinder in der Richtlinie erfasst?']],
+  ki:'Gefördert werden Zäune und Herdenschutzhunde, in Sachsen-Anhalt auch deren Unterhalt. Zuständig ist landesweit das ALFF Anhalt.',s:['Richtlinie Herdenschutz Sachsen-Anhalt','Zuwendungsempfänger']},
+ {id:'aukm',col:3,cat:['Grünland','Tierhaltung'],n:'AUKM: Extensive Beweidung',amt:'läuft',unit:'Verpflichtung bis 2028 · Schlag 17',kw:['weide','beweidung','mutterkuh','mutterkuhhaltung','grünland','extensiv','agrarumwelt','aukm'],sk:'17',
+  why:[['y','Seit 2024 bewilligt']],change:'Läuft bereits. Das Weidetagebuch führen Sie unter „Weidetagebuch“.',ki:'Mehrjährige Verpflichtung zur extensiven Beweidung. Nachweis über das Weidetagebuch.',s:['Richtlinie AUKM Sachsen-Anhalt','Verpflichtungszeitraum']},
+ {id:'jlw',col:4,cat:['Investition'],n:'Niederlassungsbeihilfe für Junglandwirte',amt:'–',unit:'passt derzeit nicht',kw:['junglandwirt','junglandwirte','niederlassung','hofübernahme','existenzgründung','gründung'],
+  why:[['n','Richtet sich an Junglandwirte, die sich erstmals niederlassen. Ihr Betrieb ist eine bestehende Genossenschaft.']],change:'Ändert sich Ihr Betriebsprofil, wird das Programm neu geprüft.',ki:'',s:['Richtlinie Niederlassungsbeihilfe','Zuwendungsempfänger']},
+ {id:'or4',col:4,cat:['Grünland'],n:'Öko-Regelung 4: Extensivierung des gesamten Dauergrünlands',amt:'–',unit:'passt derzeit nicht',demo:true,kw:['extensivierung','extensiv','grünland','viehbesatz','öko-regelung','weide'],
+  why:[['n','Gilt für das gesamte Dauergrünland. Auf Schlag 17 läuft eine AUKM, die sich nach hinterlegter Regel damit ausschließt.']],change:'Ändert sich Ihr Betriebsprofil, wird das Programm neu geprüft.',ki:'',s:['Merkblatt Öko-Regelungen 2026','ÖR 4']}
+];
+const COLS=[['Sofort beantragbar','ok'],['Mit kleiner Änderung','warn'],['Mit Investition','demo'],['Läuft bereits','plain'],['Passt derzeit nicht','crit']];
+const FILT={'Alle':[0,1,2],'Sofort':[0],'Kleine Änderung':[1],'Investition':[2],'Läuft':[3],'Passt nicht':[4]};
+let WT=[
+ {von:'05.04.',bis:'14.04.',k:12,c:10},
+ {von:'15.04.',bis:'21.04.',k:18,c:15},
+ {von:'22.04.',bis:'',k:10,c:8}
+];
+const WT_HA=12.4, WT_MAX=1.4, WT_MIN=0.3;
+const DOCS={
+ umbau:{t:'AFP: Umbau des Mutterkuhstalls',st:'Antrag in Vorbereitung · vor Baubeginn einreichen',items:[
+  {n:'Antragsformular AFP',st:'warn',note:'Fassung 2024 erkannt. Bitte die aktuelle Vorlage 2026 des ALFF verwenden.',k:'ki'},
+  {n:'Investitionskonzept mit Finanzierungsplan',st:'ok',note:'Standardtabellen unverändert, Formeln intakt.',k:'ki'},
+  {n:'Drei Vergleichsangebote',st:'open',note:'2 von 3 hochgeladen.',k:'rule'},
+  {n:'Bauantrag oder Baugenehmigung',st:'open',note:'',k:'rule'},
+  {n:'Jahresabschlüsse der letzten drei Jahre',st:'ok',note:'2022 bis 2024',k:'rule'},
+  {n:'Erklärung zum KMU-Status',st:'ok',note:'',k:'rule'},
+  {n:'Satzung der Genossenschaft',st:'ok',note:'',k:'rule'},
+  {n:'Erklärung zu Beteiligungen an anderen Unternehmen',st:'open',note:'Häufige Fehlerquelle: Angaben müssen zur Satzung passen.',k:'rule'},
+  {n:'Finanzierungsbestätigung der Bank',st:'ok',note:'',k:'rule'},
+  {n:'Unterschriften aller Vertretungsberechtigten',st:'ok',note:'',k:'rule'}]},
+ guelle:{t:'AFP: Güllelager',st:'Bewilligt · Zahlungsantrag bis 31.10.',items:[
+  {n:'Zahlungsantrag (Formular)',st:'open',note:'',k:'rule'},
+  {n:'Rechnungen im Original',st:'open',note:'',k:'rule'},
+  {n:'Zahlungsnachweise (Kontoauszüge)',st:'open',note:'',k:'rule'},
+  {n:'Fotos des fertigen Vorhabens',st:'open',note:'',k:'rule'},
+  {n:'Bewilligungsbescheid',st:'ok',note:'liegt vor',k:'rule'}]}
+};
+const LETTERS={
+ foto:{from:'Amt für Landwirtschaft, Flurneuordnung und Forsten Altmark',date:'24.04.2026',subj:'Flächenmonitoring 2026: Mitteilung zu Schlag 31',
+  body:'Sehr geehrte Damen und Herren,\n\nim Rahmen des Flächenmonitorings konnte für den Schlag 31 die beantragte Kulturart (Winterraps) bisher nicht eindeutig bestätigt werden. Sie erhalten hierzu einen Fotoauftrag in der Foto-App.\n\nBitte übermitteln Sie die geforderten georeferenzierten Fotos bis zum 19.05.2026 oder passen Sie Ihre Angaben im Antrag an. Andernfalls kann die Fläche bei der Berechnung unberücksichtigt bleiben.\n\nMit freundlichen Grüßen',
+  must:'Ja, bis 19.05.2026',due:'foto',
+  what:'Der Satellit hat auf Schlag 31 nicht eindeutig Raps erkannt. Das Amt bittet Sie, mit der Foto-App des Landes Fotos vom Schlag zu machen. Das ist ein üblicher Prüfschritt und noch kein Vorwurf.',
+  ways:[['Fotos über die Foto-App schicken','Wenn auf dem Schlag tatsächlich Raps steht. Die App führt Sie zum richtigen Standort.'],['Angaben im Antrag korrigieren','Wenn die Kulturart nicht stimmt. Änderungen sind bis 30.09. möglich.']],
+  undec:'Ob die Fläche ohne Fotos tatsächlich gekürzt wird und in welcher Höhe, entscheidet das Amt im Einzelfall.',
+  s:['Merkblatt Sammelantrag 2026','Flächenmonitoring']},
+ anh:{from:'Amt für Landwirtschaft, Flurneuordnung und Forsten Altmark',date:'22.04.2026',subj:'Anhörung: Agrarumweltmaßnahme Extensive Beweidung, Verpflichtungsjahr 2025',
+  body:'Sehr geehrte Damen und Herren,\n\nnach Ihrem Weidetagebuch 2025 für Schlag 17 lag der Viehbesatz im Zeitraum 10.06. bis 24.06.2025 bei 0,2 GVE je Hektar und damit unter dem geforderten Mindestbesatz.\n\nWir geben Ihnen Gelegenheit, sich bis zum 26.05.2026 zu dem Sachverhalt zu äußern, bevor wir über eine mögliche Kürzung entscheiden.\n\nMit freundlichen Grüßen',
+  must:'Ja, Stellungnahme bis 26.05.2026',due:'anh',
+  what:'Das Amt hat in Ihrem Weidetagebuch 2025 zwei Wochen mit zu wenig Tieren auf Schlag 17 gefunden. Bevor es entscheidet, dürfen Sie erklären, wie es dazu kam. Häufige Ursachen sind Übertragungsfehler im Tagebuch, etwa vergessene Tiere oder falsche Daten.',
+  ways:[['Tagebuch und Unterlagen prüfen','Stimmen Tierzahlen und Daten mit Ihren eigenen Aufzeichnungen und der HIT-Datenbank überein?'],['Stellungnahme schreiben','Schildern Sie den Sachverhalt sachlich und legen Sie Belege bei. Bei Unsicherheit die Landberatung hinzuziehen.']],
+  undec:'Ob ein Verstoß vorliegt und welche Folgen er hat, beurteilt allein das Amt. Dazu gibt diese Plattform keine Einschätzung ab.',
+  s:['Richtlinie AUKM Sachsen-Anhalt','Mindestbesatz'],demo:'Mindestbesatz als Beispielwert'}
+};
+const QA=[
+ {q:'Bis wann darf ich den Altgrasstreifen nicht mähen?',a:'Bis zum 1. September bleibt der Streifen stehen. Danach dürfen Sie ihn mähen oder beweiden. Das gilt für jede Teilfläche, die Sie für die Öko-Regelung 1d angeben.',s:['Merkblatt Öko-Regelungen 2026','ÖR 1d']},
+ {q:'Was muss ich bei einem Fotoauftrag tun?',a:'Öffnen Sie die Foto-App des Landes, wählen Sie den Auftrag und machen Sie die Fotos direkt auf dem Schlag. Die App speichert den Standort mit. Die Frist steht im Auftrag.',s:['Merkblatt Sammelantrag 2026','Flächenmonitoring']},
+ {q:'Kann ich die Mutterkuhprämie bekommen, wenn ich auch Milch verkaufe?',a:'Nein. Die Zahlung für Mutterkühe setzt voraus, dass Ihr Betrieb keine Kuhmilch abgibt. Ihr Betriebsprofil enthält keine Milchabgabe, die Voraussetzung ist bei Ihnen erfüllt.',s:['Merkblatt Sammelantrag 2026','Gekoppelte Einkommensstützung'],rule:'Betriebsprofil geprüft'},
+ {q:'Ist mein neuer Hoflader eine förderfähige Investition?',undec:true,a:'Das lässt sich hier nicht entscheiden. Ein Ersatz wird nur gefördert, wenn die neue Maschine deutlich mehr leistet oder neue Technik mitbringt. Ob das bei Ihrem Hoflader zutrifft, beurteilt das Amt anhand des Angebots.',s:['AFP-Richtlinie Sachsen-Anhalt','Ersatzinvestitionen']}
+];
+const EXC={'ÖR 1d':'„Altgrasstreifen oder -flächen sind auf mindestens 1 % und höchstens 6 % des förderfähigen Dauergrünlands anzulegen. Eine Nutzung durch Mahd oder Beweidung ist vor dem 1. September nicht zulässig …“'};
+
+/* ================= Logo ================= */
+const LOGO='<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#1D3327"/><path d="M9 29 21 9" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round"/><path d="M15.5 31 27 12" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".7"/><path d="M22 32.5 31.5 17" stroke="#B6F36B" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".4"/></svg>';
+
+/* ================= Skizze der Schläge ================= */
+function sketch(hl,mode){
+ const P={'21':'M20 30 L190 18 L205 150 L30 165 Z','24':'M215 18 L380 26 L370 150 L222 148 Z','17':'M392 28 L500 34 L492 152 L384 150 Z','44':'M28 180 L200 168 L214 290 L44 300 Z','31':'M228 166 L370 162 L380 292 L236 296 Z'};
+ let s=`<svg class="sketch" viewBox="0 0 520 310" role="img" aria-label="Skizze der Schläge, Schlag ${hl} hervorgehoben">`;
+ for(const k in P){const on=k===hl;const fill=k==='44'||k==='31'?(on?'#E9D96B':'#EFE6B5'):(on?'#9ACB80':'#D3E6C9');s+=`<path d="${P[k]}" fill="${fill}" stroke="${on?'#1F8A4C':'#fff'}" stroke-width="${on?3:4}" ${on?'stroke-dasharray="9 6"':''}/>`}
+ if(hl==='24'&&mode!=='plain')s+=`<path d="M215 18 L380 26 L379 42 L216 34 Z" fill="#1F8A4C"/><text x="232" y="32" font-size="11" font-weight="700" fill="#fff" font-family="Geist, Arial, sans-serif">Streifen Nordrand · 3,3 ha</text>`;
+ if(hl==='44')s+=`<path d="M28 180 L200 168 L201 186 L30 198 Z" fill="#8A6A3D"/><text x="40" y="192" font-size="11" font-weight="700" fill="#fff" font-family="Geist, Arial, sans-serif">Brache Randstreifen · 11,8 ha</text>`;
+ const L={'21':[85,95],'24':[268,95],'17':[415,95],'44':[95,245],'31':[275,235]};
+ for(const k in L)s+=`<text x="${L[k][0]}" y="${L[k][1]}" font-size="13" font-weight="650" fill="#2E4A3A" font-family="Geist, Arial, sans-serif">Schlag ${k}</text>`;
+ return s+'</svg>'}
+
+/* ================= Ansichten ================= */
+const V={};
+const topbar=(t,sub,right='')=>`<div class="top"><div><h1>${t}</h1>${sub?`<p class="sub">${sub}</p>`:''}</div><div class="row">${right}</div></div>`;
+function allDue(){return [...DUE,...S.extra].filter(d=>!(d.id==='wt'&&false)).sort((a,b)=>a.doy-b.doy)}
+
+V.start=()=>{const due=allDue();const open=due.filter(d=>!S.done.has(d.id));const in30=open.filter(d=>d.doy-TODAY<=30).length;const nx=open[0];
+ const tl=due.map(d=>{const x=d.doy/365*100;return `<button class="mk ${S.done.has(d.id)?'g':lvlOf(d)}" style="left:${x}%" title="${d.date} ${esc(d.t)}" data-a="go" data-v="${d.go}" aria-label="${d.date} ${esc(d.t)}"></button>`}).join('');
+ const labels=[[120,'30.04.',-1],[135,'15.05.',1],[146,'26.05.',-1],[273,'30.09.',1],[304,'31.10.',-1],[S.pushed?304:365,S.pushed?'':'31.12.',1]].filter(l=>l[1]).map(([d,l,u])=>`<span class="ml" style="left:${d/365*100}%;top:${u<0?20:64}px;color:${d-TODAY<=7?'var(--red)':d-TODAY<=30?'var(--amber)':'var(--pri)'}">${l}</span>`).join('');
+ return topbar('Übersicht','Dienstag, 28. April 2026 · <span class="tag demo">Demodatum</span>',`<button class="btn ghost sm" data-a="go" data-v="einstellungen">${ic('cal')} Kalender abonnieren</button><button class="iconbtn" data-a="notif" aria-label="Mitteilungen">${ic('bell')}<span class="cnt">${S.pushed?2:3}</span></button>`)+
+ (nx?`<div class="next"><div class="cal"><div><b>${nx.date.slice(0,2)}</b><br><span>${['','JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'][+nx.date.slice(3,5)]}</span></div></div><div><div class="ov">Ihr nächster Schritt · ${inDays(nx)}</div><h2>${nx.t}</h2><p>${nx.d}</p></div><div class="act row"><button class="btn lime" data-a="go" data-v="${nx.go}">So gehen Sie vor ${ic('arrow')}</button><button class="btn ghost sm" style="background:transparent;color:#fff;border-color:#2A4235" data-a="done" data-v="${nx.id}">Erledigt</button></div></div>`:'')+
+ `<div class="kpis">
+  <button class="kpi" data-a="go" data-v="meine"><div class="small muted">Laufende Förderungen</div><div class="v num">6</div><div class="xs muted">davon 2 mit Nachweis fällig</div></button>
+  <button class="kpi" data-a="go" data-v="saison"><div class="small muted">Fristen in 30 Tagen</div><div class="v num" style="color:var(--red)">${in30}</div><div class="xs muted">nächste ${nx?inDays(nx):'–'}</div></button>
+  <button class="kpi" data-a="go" data-v="suche"><div class="small muted">Zusätzlich möglich</div><div class="v num" style="color:var(--pri)">+10.600 €</div><div class="xs muted">im Jahr · 2 sofort beantragbar</div></button>
+  <button class="kpi" data-a="go" data-v="unterlagen"><div class="small muted">Unterlagen Stallumbau</div><div class="v num">${docCount('umbau')}/10</div><div class="xs muted">vollständig und geprüft</div></button>
+ </div>
+ <div class="card" style="margin-bottom:1rem"><div class="row between"><h2>Förderjahr 2026</h2><div class="row small muted"><span class="row" style="gap:.3rem"><span class="dot r"></span>dringend</span><span class="row" style="gap:.3rem"><span class="dot a"></span>bald</span><span class="row" style="gap:.3rem"><span class="dot g"></span>geplant</span></div></div>
+  <div class="tl"><div class="base"></div><div class="done" style="width:${TODAY/365*100}%"></div><div class="today" style="left:${TODAY/365*100}%"><span>heute</span></div>${tl}${labels}${['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'].map((m,i)=>`<span class="m" style="left:${i/12*100+.6}%">${m}</span>`).join('')}</div>
+  ${orig('rule','Ihre Bescheide und die Merkblätter 2026','')}</div>
+ <div class="two"><div class="card flush"><div class="row between" style="padding:1rem 1.1rem .7rem"><h2>Zu erledigen</h2><span class="small muted">nach Dringlichkeit · zum Abhaken antippen</span></div>
+  ${due.map(d=>`<div class="todo ${S.done.has(d.id)?'isdone':''}"><button class="cb" data-a="done" data-v="${d.id}" aria-label="Erledigt: ${esc(d.t)}">${ic('check')}</button><button style="flex:1;text-align:left" data-a="go" data-v="${d.go}"><div class="tt" style="font-weight:600">${d.t}${d.changed?' <span class="tag crit">Termin geändert</span>':''}</div><div class="small muted">${d.d}</div></button><span class="due ${S.done.has(d.id)?'g':lvlOf(d)}">${d.date}</span></div>`).join('')}</div>
+  <div class="card flush"><div style="padding:1rem 1.1rem .5rem"><h2>Neu für Ihren Betrieb</h2></div>
+   ${!S.pushed?`<div class="feed"><span class="bar" style="background:var(--red)"></span><div class="stack s" style="flex:1"><b>Termin geändert: Weidetagebuch</b><span class="small muted">Schlag 17 jetzt bis 31.10. statt 31.12. abgeben</span><button class="btn sm" data-a="push" style="align-self:flex-start">In meine Fristen übernehmen</button>${orig('rule','Merkblatt AUKM, Fassung 04/2026','Nachweise','Beispiel')}</div></div>`:''}
+   <button class="feed" data-a="go" data-v="post"><span class="bar" style="background:#D97706"></span><div class="stack s"><b>2 Schreiben vom Amt</b><span class="small muted">Fotoauftrag Schlag 31 · Anhörung Weidetagebuch 2025</span><span class="link small">Verstehen und Frist übernehmen →</span></div></button>
+   <button class="feed" data-a="sel" data-v="or1d"><span class="bar" style="background:var(--pri)"></span><div class="stack s"><b>Neue Förderung passt</b><span class="small muted">Altgrasstreifen auf Schlag 24 · ca. 3.300 € im Jahr</span><span class="link small">Ansehen →</span></div></button>
+   <button class="feed" data-a="excerpt" data-v="Merkblatt Öko-Regelungen 2026|Änderungen 2026"><span class="bar" style="background:var(--ki)"></span><div class="stack s"><b>Merkblatt aktualisiert</b><span class="small muted">Öko-Regelungen 2026 · 3 Änderungen kurz erklärt</span><span class="tag ki" style="align-self:flex-start">KI-Zusammenfassung</span></div></button>
+  </div></div>`};
+
+V.saison=()=>{const steps=[
+ ['Januar bis Februar','Vorbereiten',[['s1','Schulung des ALFF zum Antragsjahr 2026 besucht','ALFF Altmark','02.02.'],['s2','Neue Programme und Änderungen gesichtet','FörderLotse','Feb.']]],
+ ['März','Antrag öffnen',[['s3','ELAISA freigeschaltet, Vorjahresdaten übernommen','ELAISA','März'],['s4','Kulturen 2026 aus der Schlagkartei abgeglichen','Betrieb','März'],['s5','Flächenzu- und -abgänge erfasst','Betrieb','März']]],
+ ['April','Klären und nachweisen',[['s6','Öko-Regelungen ausgewählt, Kombination geprüft','FörderLotse','20.04.'],['n2000','Natura-2000-Bestätigung bei der Umweltbehörde des Landkreises einholen','Landkreis · Vorlauf einplanen','30.04.'],['s7','Flächen nach GLÖZ-Vorgaben prüfen, wo nötig neu einzeichnen','ELAISA','05.05.'],['s8','Offene Fragen schriftlich ans Amt','ALFF Altmark','05.05.']]],
+ ['Mai','Einreichen',[['sa','Sammelantrag 2026 in ELAISA einreichen','ELAISA','15.05.'],['foto','Fotoauftrag Schlag 31 beantworten','Foto-App','19.05.']]],
+ ['Juni bis Dezember','Nachweisen und korrigieren',[['s9','Altgrasstreifen bis 01.09. stehen lassen','Betrieb','01.09.'],['aend','Letzte Änderungen nach Flächenmonitoring','ELAISA','30.09.'],['wt','Weidetagebuch Schlag 17 abgeben','ALFF Altmark',S.pushed?'31.10.':'31.12.']]]];
+ const all=steps.flatMap(p=>p[2]);const dn=all.filter(x=>S.saisonDone.has(x[0])||S.done.has(x[0])).length;
+ return topbar('Saisonplan Sammelantrag 2026','Alle Vorarbeiten bis zum 15. Mai in sinnvoller Reihenfolge, auch die Fristen anderer Behörden.',`<button class="btn ghost sm" data-a="go" data-v="einstellungen">${ic('cal')} In meinen Kalender</button>`)+
+ `<div class="two" style="grid-template-columns:1fr 340px"><div class="card">
+  ${steps.map(([m,t,it],i)=>`<div class="phase ${i===2?'now':''}"><div class="pm"><b>${m}</b><span class="small muted">${t}</span>${i===2?'<div><span class="tag dark" style="margin-top:.4rem">Sie sind hier</span></div>':''}</div><div>${it.map(([id,tt,who,dt])=>{const d=S.saisonDone.has(id)||S.done.has(id);return `<button class="chk ${d?'isdone':''}" data-a="sdone" data-v="${id}"><span class="cb">${ic('check')}</span><span><span class="tt" style="font-weight:600">${tt}</span><br><span class="xs muted">${who}</span>${id==='n2000'?'<br><span class="tag warn" style="margin-top:.3rem">Frist einer anderen Behörde · liegt vor dem Antragstermin</span>':''}</span><span class="due ${d?'g':id==='n2000'?'r':['sa','foto','s7','s8'].includes(id)?'a':'g'}">${dt}</span></button>`}).join('')}</div></div>`).join('')}
+  ${orig('rule','Merkblatt Sammelantrag 2026','Termine','Reihenfolge und einzelne Termine beispielhaft')}</div>
+  <div class="stack"><div class="card stack s"><span class="small muted">Bis zum Antragstermin</span><div class="countdown"><b class="num">17</b><span class="muted">Tage</span></div><div class="pbar"><i style="width:${dn/all.length*100}%"></i></div><span class="small">${dn} von ${all.length} Schritten erledigt</span></div>
+  <div class="card stack s" style="background:var(--side);color:#fff;border:0"><b style="color:var(--lime)">Tipp für die nächsten zwei Wochen</b><p class="small" style="color:#D3DED8">Kurz vor dem 15. Mai sind die Telefone im Amt stark belegt. Klären Sie offene Fragen jetzt schriftlich, dann haben Sie eine belastbare Antwort.</p><button class="btn lime sm" data-a="go" data-v="anfrage" style="align-self:flex-start">Anfrage ans Amt vorbereiten</button></div>
+  <div class="card stack s"><b>Erinnerungen</b><p class="small muted">Sie werden ${[...S.lead].sort((a,b)=>b-a).join(' und ')} Tage vor jeder Frist erinnert, per ${[S.rem.mail&&'E-Mail',S.rem.sms&&'SMS',S.rem.push&&'Mitteilung aufs Handy'].filter(Boolean).join(', ')}.</p><button class="link small" style="text-align:left" data-a="go" data-v="einstellungen">Ändern →</button></div></div></div>`};
+
+V.suche=()=>{const q=S.kw.trim().toLowerCase();let items;
+ if(q.length>1){items=F.filter(f=>f.kw.some(w=>w.includes(q)||(q.length>3&&q.includes(w)))||f.n.toLowerCase().includes(q))}
+ else items=F.filter(f=>FILT[S.flt].includes(f.col));
+ const groups=[0,1,2,3,4].map(c=>[c,items.filter(f=>f.col===c)]).filter(g=>g[1].length);
+ if(!items.find(f=>f.id===S.sel)&&items.length)S.sel=items[0].id;
+ const f=F.find(x=>x.id===S.sel);const n=S.picked.size;
+ const mk=(t)=>{if(q.length<2)return t;const i=t.toLowerCase().indexOf(q);return i<0?t:t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length)};
+ return topbar('Förderung finden','Abgeglichen mit Ihrem Betriebsprofil · Grundlage: Unterlagen der ÄLFF Sachsen-Anhalt, Stand 04/2026')+
+ `<div class="split ${S.showD?'showd':''}"><div class="list">
+  <div class="search">${ic('search')}<input id="kw" value="${esc(S.kw)}" placeholder="Schlagwort, z. B. Mutterkuhhaltung, Brache, Wolf" aria-label="Förderprogramme durchsuchen">${S.kw?`<button class="iconbtn" style="width:36px;height:36px;border:0" data-a="kwclr" aria-label="Suche leeren">${ic('x')}</button>`:''}</div>
+  ${q.length>1?`<div class="small muted">${items.length} Treffer für „${esc(S.kw)}“ · auch laufende und nicht passende Programme</div>`:`<div class="chips">${Object.keys(FILT).map(k=>`<button class="chip ${k===S.flt?'on':''}" data-a="flt" data-v="${k}">${k}</button>`).join('')}</div>`}
+  ${groups.map(([c,fs])=>`<div class="grp"><span>${COLS[c][0]}</span>${c===0?'<span style="color:var(--pri)">ca. 10.600 €/Jahr</span>':''}</div>${fs.map(x=>`<button class="res ${x.id===S.sel?'on':''}" data-a="sel" data-v="${x.id}"><span class="dot ${['g','a','a','n','r'][x.col]}"></span><span><b>${mk(x.n)}</b><span class="xs muted">${COLS[x.col][0]}${x.undec?' · 1 Punkt nicht entscheidbar':''}${S.picked.has(x.id)?' · <span style="color:var(--pri);font-weight:600">vorgemerkt</span>':''}</span></span><span class="amt num">${x.amt}</span></button>`).join('')}`).join('')||`<div class="box plain small"><b>Zu diesem Schlagwort ist kein Programm hinterlegt.</b><br>Im Klick-Dummy sind neun Programme hinterlegt. Versuchen Sie ein anderes Wort oder <button class="link" data-a="go" data-v="fragen">stellen Sie eine Frage</button>.</div>`}
+  <div class="tray ${n?'in':''}"><span class="small">${n===1?'1 Förderung':n+' Förderungen'} vorgemerkt</span><button class="btn lime sm" data-a="combo">Kombination prüfen</button></div>
+ </div>
+ <div class="detail">${f?detail(f):''}</div></div>`};
+function detail(f){const sym={y:'✓',q:'?',n:'✕'};
+ return `<button class="btn ghost sm deskhide" data-a="back" style="align-self:flex-start">${ic('back')} Zur Liste</button>
+ <div class="row between" style="align-items:flex-start"><div class="stack s" style="flex:1;min-width:240px"><span class="tag ${COLS[f.col][1]}" style="align-self:flex-start">${COLS[f.col][0]}</span><h1 style="font-size:1.6rem">${f.n.replace('AFP',ab('AFP')).replace('AUKM',ab('AUKM'))}</h1></div>
+ <div style="text-align:right"><div class="num" style="font-size:1.9rem;font-weight:700;color:var(--pri);letter-spacing:-.04em">${f.amt}</div><div class="xs muted">${f.unit}${f.demo?' · Beispielwert':''}</div></div></div>
+ <div class="d2"><div class="card stack s"><h3>${f.col===4?'Warum es nicht passt':'Warum es passt'}</h3>${f.why.map(w=>`<div class="check"><i class="${w[0]}">${sym[w[0]]}</i><span>${w[1]}</span></div>`).join('')}${orig('rule','','')}</div>
+ <div class="card stack s"><h3>Wo auf Ihren Flächen</h3>${f.sk?sketch(f.sk):`<div class="box plain small">${f.where||'Betrifft den gesamten Betrieb.'}</div>`}<p class="small muted">${f.change}</p></div></div>
+ ${f.ki?`<div class="box ki stack s"><div class="row"><span class="tag ki">${ic('spark','width:14px;height:14px')} Einfach erklärt</span></div><p>${f.ki}</p>${orig('ki',f.s[0],f.s[1],'Beispieltext')}</div>`:''}
+ ${f.undec?`<div class="box undec stack s"><b style="color:var(--amber)">Nicht von uns entscheidbar</b><p class="small">Ob der Umbau als Ersatzinvestition gilt, ist eine fachliche Beurteilung des Amts. Stellen Sie die Frage am besten schriftlich, dann haben Sie eine belastbare Antwort.</p><button class="btn sm" data-a="ask" data-v="afp" style="align-self:flex-start">${ic('mail')} Anfrage ans Amt vorbereiten</button></div>`:''}
+ ${f.weigh?`<div class="box sun stack s"><div class="row between"><b>Abwägungshilfe</b><span class="tag demo">keine Empfehlung</span></div><table class="weigh">${f.weigh.map(w=>`<tr><td>${w[0]}</td><td>${w[1]}</td></tr>`).join('')}</table></div>`:''}
+ <div class="row">${f.col<3?`${f.id==='afp'?`<button class="btn" data-a="go" data-v="unterlagen">${ic('folder')} Unterlagen zusammenstellen</button>`:f.col<2?`<button class="btn" data-a="wiz" data-v="${f.id}">${ic('file')} Antrag vorbereiten</button>`:`<button class="btn" data-a="ask" data-v="hs">${ic('mail')} Beim ALFF Anhalt nachfragen</button>`}<button class="btn ghost" data-a="pick" data-v="${f.id}">${S.picked.has(f.id)?ic('check')+' Vorgemerkt':'Vormerken'}</button>`:f.col===3?`<button class="btn" data-a="go" data-v="nachweise">${ic('book')} Zum Weidetagebuch</button>`:''}</div>`}
+
+V.antrag=()=>{const fid=S.wzFor||'or1d';if(fid!=='or1d')return topbar('Antrag vorbereiten','')+`<div class="card stack wiz"><h2>${F.find(x=>x.id===fid).n}</h2><p>Diese Förderung kreuzen Sie im Sammelantrag an. Weitere Angaben sind im Klick-Dummy nur für den Altgrasstreifen hinterlegt.</p><div class="row"><button class="btn" data-a="wiz" data-v="or1d">Beispiel Altgrasstreifen ansehen</button><button class="btn ghost" data-a="go" data-v="suche">Zurück zur Suche</button></div></div>`;
+ const W=[
+ ()=>`<span class="tag plain">ÖR 1d · Altgrasstreifen</span><h1>Auf welchen Schlägen legen Sie den Altgrasstreifen an?</h1><p class="muted">Vorgeschlagen nach der Kombinationsprüfung. Sie können die Auswahl ändern.</p>
+  ${[['Schlag 24 · Am Mühlgraben','15,4 ha Dauergrünland · Mahd','vorgeschlagen',1,0],['Schlag 21 · Lange Wiese','18,2 ha · für Kennarten vorgesehen','',0,0],['Schlag 17 · Bruchwiese','12,4 ha · laufende AUKM','nicht kombinierbar',0,1]].map(r=>`<label class="opt"><input type="checkbox" ${r[3]?'checked':''} ${r[4]?'disabled':''}><span><b>${r[0]}</b><br><span class="small muted">${r[1]}</span></span>${r[2]?`<span class="tag ${r[4]?'crit':'ok'}">${r[2]}</span>`:'<span></span>'}</label>`).join('')}${sketch('24')}`,
+ ()=>`<h1>Wie groß soll der Altgrasstreifen sein?</h1><p class="muted">Möglich sind 1 bis 6 % Ihres Dauergrünlands, also 3,3 bis 19,9 ha.</p><div class="card stack"><div class="row between"><b class="num" style="font-size:2.2rem;letter-spacing:-.04em" id="haV"></b><span class="muted num" id="haP"></span></div><input type="range" id="haR" min="3.3" max="19.9" step="0.1" value="${S.ha}" style="width:100%;accent-color:var(--pri);height:28px" aria-label="Größe in Hektar"><div class="box rule"><b>Voraussichtliche Prämie</b><p class="num" id="haE"></p>${orig('rule','Merkblatt Öko-Regelungen 2026','ÖR 1d','Staffel vereinfacht')}</div></div>`,
+ ()=>`<h1>Können Sie die Auflagen einhalten?</h1><p class="muted">Bitte bestätigen Sie die folgenden Punkte.</p>${['Der Streifen wird bis zum 1. September weder gemäht noch beweidet.','Er liegt auf förderfähigem Dauergrünland und ist im Flächennachweis eingezeichnet.','Dieselbe Teilfläche wird nicht für eine andere Öko-Regelung beantragt.'].map(t=>`<label class="opt"><input type="checkbox" checked><span>${t}</span><span></span></label>`).join('')}<div class="box ki stack s"><b>Warum bis September?</b><p class="small">Der stehende Aufwuchs bietet Insekten und Bodenbrütern Rückzug, solange die übrige Fläche gemäht ist.</p>${orig('ki','Merkblatt Öko-Regelungen 2026','ÖR 1d','Beispieltext')}</div>`,
+ ()=>{const e=prem(S.ha);const h=S.ha.toFixed(1).replace('.',',');return `<div class="row between"><div><h1>Ihre Antragsmappe</h1><p class="muted">Alle Angaben in der Reihenfolge, in der Sie sie eintragen. Übertragen Sie die Werte selbst in ${ab('ELAISA')}.</p></div><span class="tag crit">Nicht eingereicht</span></div>
+  <div class="doc"><h2>Öko-Regelung 1d: Altgrasstreifen · Antragsjahr 2026</h2><p class="small muted">Agrargenossenschaft Musterhof eG · erstellt am 28.04.2026</p>
+  <h3>Im Sammelantrag ankreuzen</h3>${frow('Maßnahme','ÖR 1d Altgrasstreifen oder -flächen in Dauergrünland')}${frow('Beantragter Umfang',h+' ha')}
+  <h3>Im Flächennachweis eintragen</h3>${frow('Schlag','24 · Am Mühlgraben')}${frow('Nutzung','Dauergrünland, Mähwiese')}${frow('Teilfläche einzeichnen','Streifen am Nordrand, '+h+' ha')}
+  <h3>Für Ihre Unterlagen</h3>${frow('Voraussichtliche Prämie','ca. '+fmt(e)+' €')}${frow('Auflage','keine Mahd oder Beweidung vor dem 01.09.')}${frow('Antragsfrist','15.05.2026')}
+  <p class="xs muted" style="margin-top:1rem">Die Feldbezeichnungen sind Beispiele und entsprechen nicht dem Aufbau von ELAISA. Mit einer Schnittstelle zum Antragssystem entfiele dieser Übertrag.</p></div>
+  <div class="row"><button class="btn" data-a="cpall">${ic('copy')} Alle Angaben kopieren</button><button class="btn ghost" data-a="addalt">Frist und Auflage in die Übersicht</button></div>`}];
+ const last=S.wz===3;
+ return `<div class="wiz stack">${last?'':`<div class="row between"><span class="small muted">Frage ${S.wz+1} von 3</span><a href="#suche" class="small link">Abbrechen</a></div><div class="pbar"><i style="width:${(S.wz+1)/4*100}%"></i></div>`}${W[S.wz]()}${last?'':`<div class="row between"><button class="btn ghost" data-a="wzb" style="visibility:${S.wz?'visible':'hidden'}">Zurück</button><button class="btn pri" data-a="wzn">${S.wz===2?'Antragsmappe erstellen':'Weiter'}</button></div>`}</div>`};
+const prem=h=>Math.round(Math.min(h,3.32)*1000+Math.max(0,h-3.32)*400);
+const frow=(a,b)=>`<div class="frow"><span class="muted">${a}</span><b>${b}</b><button class="btn ghost sm" data-a="cp" data-v="${esc(b)}">${ic('copy')} Kopieren</button></div>`;
+
+V.meine=()=>topbar('Meine Förderungen','Was bewilligt oder beantragt ist, bis wann es bindet und welche Nachweise ausstehen.')+`<div class="stack">${PROGS.map((p,i)=>`<details class="prog" ${i===3?'open':''}><summary><div><b>${p.n.replace('AUKM',ab('AUKM')).replace('AFP',ab('AFP'))}</b><div class="small muted">${p.bind}</div></div><span class="tag ${p.st[0]}">${p.st[1]}</span>${ic('chev','width:18px;height:18px;color:var(--mut)')}</summary><div class="body"><div><h3 style="margin-bottom:.6rem">Schritte und Nachweise</h3><ul class="steps">${p.steps.map(s=>`<li><span class="sd ${s[0]}"></span><span>${s[1]}</span><span class="small muted num">${i===3&&s[2]==='31.12.'&&S.pushed?'31.10.':s[2]}</span></li>`).join('')}</ul></div><div class="stack s"><div class="box plain small">${p.note}</div>${p.go?`<button class="btn sm" data-a="go" data-v="${p.go[0]}" style="align-self:flex-start">${p.go[1]} ${ic('arrow')}</button>`:''}${orig('rule',p.s[0],p.s[1])}</div></div></details>`).join('')}</div>`;
+
+function wtCalc(e){const g=e.k*1+e.c*0.3;return g/WT_HA}
+V.nachweise=()=>{const rows=WT.map((e,i)=>{const b=wtCalc(e);const w=[];if(b>WT_MAX)w.push(`Besatz ${b.toFixed(2).replace('.',',')} GVE/ha liegt über der Obergrenze von ${String(WT_MAX).replace('.',',')}`);if(b<WT_MIN)w.push('Besatz unter dem Mindestbesatz');if(!e.bis&&i<WT.length-1)w.push('Abtrieb fehlt');return {e,b,w,i}});
+ const warn=rows.filter(r=>r.w.length).length;
+ return topbar('Weidetagebuch 2026',`Schlag 17 · Bruchwiese · 12,4 ha · ${ab('AUKM')} Extensive Beweidung`,`<button class="btn ghost sm" data-a="wtexp">${ic('file')} Für das Amt exportieren</button>`)+
+ `<div class="kpis" style="grid-template-columns:repeat(3,1fr)"><div class="kpi"><div class="small muted">Abgabe</div><div class="v">${S.pushed?'31.10.':'31.12.'}</div><div class="xs muted">${S.pushed?'<span style="color:var(--red);font-weight:600">vorverlegt</span> laut Merkblatt 04/2026':'laut Bescheid'}</div></div><div class="kpi"><div class="small muted">Weidetage erfasst</div><div class="v num">24</div><div class="xs muted">seit 05.04.</div></div><div class="kpi"><div class="small muted">Hinweise</div><div class="v num" style="color:${warn?'var(--amber)':'var(--pri)'}">${warn}</div><div class="xs muted">${warn?'bitte prüfen':'alles plausibel'}</div></div></div>
+ <div class="two" style="grid-template-columns:1fr 360px"><div class="card flush"><div class="tw"><table class="t"><thead><tr><th>Auftrieb</th><th>Abtrieb</th><th>Mutterkühe</th><th>Kälber</th><th>Besatz</th><th></th></tr></thead><tbody>
+ ${rows.map(r=>`<tr class="${r.w.length?'warnrow':''}"><td class="num">${r.e.von}</td><td class="num">${r.e.bis||'<span class="tag ok">auf der Weide</span>'}</td><td class="num">${r.e.k}</td><td class="num">${r.e.c}</td><td class="num">${r.b.toFixed(2).replace('.',',')} ${ab('GVE')}/ha</td><td>${r.w.length?`<span class="tag warn">${ic('warn','width:13px;height:13px')} prüfen</span>`:'<span class="tag ok">✓</span>'}</td></tr>${r.w.length?`<tr class="warnrow"><td colspan="6" class="small" style="color:var(--amber);padding-top:0">${r.w.join(' · ')}. Stimmen die Tierzahlen? Wenn ja, prüfen Sie, ob Tiere auf eine andere Fläche wechseln können.</td></tr>`:''}`).join('')}</tbody></table></div>
+ <div style="padding:.8rem 1.1rem">${orig('rule','Richtlinie AUKM Sachsen-Anhalt','Viehbesatz','Grenzwerte und Umrechnung beispielhaft')}</div></div>
+ <div class="card stack"><h2>Weidegang eintragen</h2><p class="small muted">Geht auch auf dem Handy, direkt beim Auftrieb. Die Prüfung läuft sofort, nicht erst am Jahresende.</p>
+  <div class="row nowrap"><label class="f" style="flex:1">Auftrieb<input class="inp" id="wvon" value="29.04." inputmode="numeric"></label><label class="f" style="flex:1">Abtrieb<input class="inp" id="wbis" placeholder="offen" inputmode="numeric"></label></div>
+  <div class="row nowrap"><label class="f" style="flex:1">Mutterkühe<input class="inp" id="wk" value="16" type="number" min="0"></label><label class="f" style="flex:1">Kälber<input class="inp" id="wc" value="14" type="number" min="0"></label></div>
+  <div class="box plain small" id="wlive"></div>
+  <button class="btn pri" data-a="wtadd">${ic('plus')} Eintragen</button>
+  <p class="xs muted">Sind Sie unsicher, ob ein Eintrag stimmt? <button class="link" data-a="go" data-v="fragen">Frage stellen</button></p></div></div>`};
+
+function docCount(k){return DOCS[k].items.filter(i=>i.st==='ok').length}
+V.unterlagen=()=>{const D=DOCS[S.docTab];const ok=docCount(S.docTab),tot=D.items.length;
+ return topbar('Unterlagenmappe','Für Förderungen auf Papier: Was vorliegt, was fehlt und was vor dem Einreichen zu korrigieren ist.')+
+ `<div class="chips" style="margin-bottom:1rem">${[['umbau','AFP: Stallumbau'],['guelle','AFP: Güllelager']].map(([k,l])=>`<button class="chip ${k===S.docTab?'on':''}" data-a="dtab" data-v="${k}">${l}</button>`).join('')}</div>
+ <div class="two" style="grid-template-columns:1fr 340px"><div class="card flush"><div class="row between" style="padding:1.1rem"><div><h2>${D.t.replace('AFP',ab('AFP'))}</h2><span class="small muted">${D.st}</span></div><span class="tag demo">Beispielliste, maßgeblich ist die Liste des ALFF</span></div>
+ ${D.items.map((it,i)=>`<div class="todo" style="align-items:flex-start"><span class="cb" style="${it.st==='ok'?'background:var(--pri);border-color:var(--pri)':it.st==='warn'?'background:var(--amberT);border-color:#D97706':''}">${it.st==='ok'?ic('check','opacity:1;color:#fff'):it.st==='warn'?'<b style="color:var(--amber);font-size:.8rem">!</b>':''}</span><div style="flex:1"><b>${it.n}</b>${it.note?`<div class="small" style="color:${it.st==='warn'?'var(--amber)':'var(--mut)'}">${it.note}</div>`:''}${it.st!=='open'?`<div class="xs muted" style="margin-top:.2rem">${it.k==='ki'?'Vorlagenprüfung mit KI · bitte selbst kontrollieren':'Regelprüfung'}</div>`:''}</div>${it.st==='ok'?'<span class="tag ok">liegt vor</span>':`<button class="btn ghost sm" data-a="upl" data-v="${i}">${ic('up')} ${it.st==='warn'?'Neue Fassung':'Hochladen'}</button>`}</div>`).join('')}
+ <div style="padding:.9rem 1.1rem">${orig('rule','AFP-Richtlinie Sachsen-Anhalt','Antragsunterlagen','Beispiel')}</div></div>
+ <div class="stack"><div class="card row nowrap" style="gap:1rem"><div class="ring" style="--p:${ok/tot*100}"><b class="num">${ok}/${tot}</b></div><div><b>${ok===tot?'Vollständig':'Noch nicht vollständig'}</b><p class="small muted">${ok===tot?'Sie können die Mappe ausdrucken und beim ALFF einreichen.':`${tot-ok} Unterlagen fehlen oder müssen korrigiert werden.`}</p></div></div>
+ ${S.docTab==='umbau'?`<div class="box crit small"><b>Wichtig:</b> Der Antrag muss vor Baubeginn beim ALFF eingehen. Auch eine Auftragsvergabe gilt in der Regel schon als Beginn. <span class="tag demo">Beispieltext</span></div>
+ <div class="card stack s"><h3>Nach der Bewilligung</h3><ul class="steps small"><li><span class="sd"></span><span>Vorhaben abschließen</span><span class="muted">laut Bescheid</span></li><li><span class="sd"></span><span>Zahlungsantrag mit Originalbelegen</span><span class="muted">31.10.</span></li><li><span class="sd"></span><span>Jährliche Nachweise während der Zweckbindung</span><span class="muted">jährlich</span></li></ul><p class="xs muted">Die Termine kommen automatisch in Ihre Fristen und in den Kalender.</p></div>`:`<div class="box sun small"><b>Zahlungsantrag bis 31.10.</b><br>Belege im Original. Die Frist steht in Ihrer Übersicht.</div>`}
+ <button class="btn ghost" data-a="snackv" data-v="Mappe als PDF erstellt (im Klick-Dummy nur angedeutet).">${ic('file')} Mappe als PDF erstellen</button></div></div>`};
+
+V.post=()=>{const L=S.letter&&LETTERS[S.letter];
+ return topbar('Post vom Amt','Schreiben hochladen oder weiterleiten. Wir erklären, ob Sie handeln müssen und bis wann.')+
+ (!L?`<div class="two" style="grid-template-columns:1fr 1fr"><div class="drop stack" style="align-items:center"><span style="width:52px;height:52px;border-radius:14px;background:var(--priT);display:grid;place-items:center;color:var(--pri)">${ic('up','width:26px;height:26px')}</span><b>Schreiben hier ablegen oder fotografieren</b><span class="small muted">PDF, Foto oder weitergeleitete E-Mail. Das Schreiben wird nur für die Erklärung gelesen.</span><span class="tag demo">Im Klick-Dummy: Beispielschreiben wählen</span></div>
+ <div class="card stack"><h2>Eingegangen</h2>${[['foto','Flächenmonitoring 2026: Mitteilung zu Schlag 31','24.04.2026 · ALFF Altmark'],['anh','Anhörung: Extensive Beweidung, Verpflichtungsjahr 2025','22.04.2026 · ALFF Altmark']].map(([k,t,d])=>`<button class="res" data-a="letter" data-v="${k}"><span class="dot r"></span><span><b>${t}</b><span class="xs muted">${d} · noch nicht gelesen</span></span>${ic('chev','width:18px;height:18px')}</button>`).join('')}</div></div>`:
+ S.reading?`<div class="card stack" style="align-items:center;padding:3rem"><span class="typing"><i></i><i></i><i></i></span><b>Schreiben wird gelesen …</b><span class="small muted">Wir gleichen es mit den Merkblättern und Ihren Fristen ab.</span></div>`:
+ `<button class="btn ghost sm" data-a="letter" data-v="" style="margin-bottom:1rem">${ic('back')} Alle Schreiben</button><div class="two" style="grid-template-columns:1fr 1fr"><div class="paper"><div class="hd">${L.from}<br>${L.date} · <span class="tag demo">Beispielschreiben</span></div><b>${L.subj}</b><p style="white-space:pre-wrap;margin-top:.8rem">${L.body}</p></div>
+ <div class="stack"><div class="card stack s" style="border:2px solid var(--red)"><span class="small muted">Müssen Sie handeln?</span><b style="font-size:1.3rem">${L.must}</b>${orig('rule','','')}<div class="row"><button class="btn sm" data-a="takeDue" data-v="${L.due}">${S.done.has('take_'+L.due)?ic('check')+' In Ihren Fristen':'Frist übernehmen'}</button></div></div>
+ <div class="card stack s"><h3>Worum es geht</h3><p>${L.what}</p>${orig('ki',L.s[0],L.s[1],L.demo||'Beispieltext')}</div>
+ <div class="card stack s"><h3>Ihre Möglichkeiten</h3>${L.ways.map((w,i)=>`<div class="check"><i class="y">${i+1}</i><span><b>${w[0]}</b><br><span class="small muted">${w[1]}</span></span></div>`).join('')}</div>
+ <div class="box undec stack s"><b style="color:var(--amber)">Was wir nicht beurteilen</b><p class="small">${L.undec}</p><button class="btn sm" data-a="ask" data-v="${S.letter}" style="align-self:flex-start">${ic('mail')} ${S.letter==='anh'?'Stellungnahme vorbereiten':'Rückfrage ans Amt vorbereiten'}</button></div></div></div>`)};
+
+V.fragen=()=>topbar('Fragen und Anfragen','Antworten nur aus den Unterlagen der ÄLFF Sachsen-Anhalt. Was wir nicht entscheiden können, klären Sie schriftlich mit dem Amt.')+
+ `<div class="chatw"><div class="card flush"><div class="msgs" id="msgs" aria-live="polite"></div><div class="chips" id="sugg" style="padding:0 1rem .8rem"></div><form class="cform" id="chatForm"><input class="inp" id="chatIn" placeholder="Ihre Frage in eigenen Worten" aria-label="Frage"><button class="btn pri" type="submit" aria-label="Senden">${ic('send')}</button></form></div>
+ <div class="stack"><div class="card stack s"><div class="row between"><h2>Anfragen ans Amt</h2><button class="btn sm" data-a="go" data-v="anfrage">${ic('plus')} Neu</button></div>${S.anfragen.map((a,i)=>`<div class="box plain stack s"><b class="small">${a.t}</b><span class="xs muted">${a.to} · ${a.d}</span><span class="tag ${a.st==='Antwort abgelegt'?'ok':'warn'}" style="align-self:flex-start">${a.st}</span>${a.ans?`<span class="small">„${a.ans}“</span>`:`<button class="link small" style="text-align:left" data-a="ans" data-v="${i}">Antwort ablegen →</button>`}</div>`).join('')}</div>
+ <div class="box sun small">Schriftliche Antworten des Amts sind belastbarer als Telefonauskünfte. Abgelegte Antworten finden Sie hier wieder.</div></div></div>`;
+
+V.anfrage=()=>{const A=S.aq;
+ return topbar('Anfrage ans Amt vorbereiten','Wir formulieren Ihre Frage so, dass das Amt sie eindeutig beantworten kann. Senden tun Sie selbst.')+
+ `<div class="two" style="grid-template-columns:1fr 1fr"><div class="card stack"><label class="f">An<select class="inp" id="aqTo">${['ALFF Altmark · Investitionsförderung','ALFF Altmark · Flächenförderung','Landkreis · Untere Naturschutzbehörde','ALFF Anhalt · Herdenschutz'].map(o=>`<option ${o===A.to?'selected':''}>${o}</option>`).join('')}</select></label>
+ <label class="f">Thema<input class="inp" id="aqTopic" value="${esc(A.topic)}"></label>
+ <label class="f">Ihr Anliegen in eigenen Worten<textarea class="inp" id="aqText" rows="4">${esc(A.text)}</textarea></label>
+ <div class="stack s"><b class="small">Mitschicken</b>${[['name','Name und Anschrift des Betriebs'],['bnr','Betriebsnummer (geben Sie sie selbst ein)'],['vorhaben','Kurzbeschreibung des Vorhabens'],['angebot','Angebot als Anlage']].map(([k,l])=>`<label class="row nowrap small"><input type="checkbox" data-inc="${k}" ${A.inc[k]?'checked':''} style="width:18px;height:18px;accent-color:var(--pri)"> ${l}</label>`).join('')}</div>
+ <button class="btn pri" data-a="draft">${ic('spark')} Anfrage formulieren</button></div>
+ <div class="stack">${A.draft?`<div class="mail" id="mailT">${esc(mailText())}</div>${orig('ki','AFP-Richtlinie Sachsen-Anhalt','Ersatzinvestitionen','Entwurf, bitte prüfen')}<div class="row"><button class="btn" data-a="cpmail">${ic('copy')} Text kopieren</button><a class="btn ghost" href="mailto:?subject=${encodeURIComponent(A.topic)}&body=${encodeURIComponent(mailText())}">${ic('mail')} Im E-Mail-Programm öffnen</a><button class="btn ghost" data-a="sent">Als gesendet ablegen</button></div><p class="xs muted">Die E-Mail-Adresse des Amts tragen Sie selbst ein. Diese Plattform sendet nichts.</p>`:`<div class="drop stack" style="align-items:center"><span class="muted">${ic('mail','width:30px;height:30px')}</span><b>Hier erscheint Ihr Entwurf</b><span class="small muted">Mit genauer Frage, Bezug auf die Fundstelle und Liste der Anlagen.</span></div>`}</div></div>`};
+function mailText(){const A=S.aq;return `Betreff: ${A.topic}\n\nSehr geehrte Damen und Herren,\n\n${A.inc.name?'wir, die Agrargenossenschaft Musterhof eG (Altmarkkreis Salzwedel), ':'wir '}bitten um eine schriftliche Auskunft zu folgender Frage:\n\n1. ${A.text.trim().replace(/\?*$/,'?')}\n2. Falls ja: Welche Unterlagen benötigen Sie, um die Förderfähigkeit zu beurteilen?\n\n${A.inc.vorhaben?'Zum Hintergrund: Der vorhandene Hoflader wird ersetzt. Das neue Gerät hat nach Angebot eine höhere Hubkraft und einen Elektroantrieb.\n\n':''}Wir beziehen uns auf die AFP-Richtlinie des Landes Sachsen-Anhalt, Abschnitt zu Ersatzinvestitionen.\n${A.inc.bnr?'\nBetriebsnummer: [bitte eintragen]\n':''}${A.inc.angebot?'\nAnlage: Angebot Hoflader\n':''}\nFür eine Antwort per E-Mail wären wir dankbar.\n\nMit freundlichen Grüßen\n[Name]\nAgrargenossenschaft Musterhof eG`}
+
+V.einstellungen=()=>topbar('Erinnerungen und Kalender','Damit keine Frist verloren geht, auch wenn Sie die Plattform wochenlang nicht öffnen.')+
+ `<div class="two" style="grid-template-columns:1fr 1fr"><div class="card"><h2>Erinnerungen</h2><p class="small muted" style="margin:.2rem 0 .6rem">Für alle Fristen in Ihrer Übersicht, auch für geänderte Termine.</p>
+ ${[['mail','Per E-Mail','test@agrar-musterhof.example'],['sms','Per SMS','Handynummer hinterlegen'],['push','Mitteilung aufs Handy','in der App'],['week','Wochenüberblick am Montag','Was diese Woche ansteht']].map(([k,l,s])=>`<div class="setrow"><div><b>${l}</b><div class="small muted">${s}</div></div><button class="toggle ${S.rem[k]?'on':''}" data-a="rem" data-v="${k}" role="switch" aria-checked="${S.rem[k]}" aria-label="${l}"></button></div>`).join('')}
+ <div class="setrow" style="flex-direction:column;align-items:flex-start"><b>Vorlauf</b><div class="chips">${[30,14,7,2,1].map(d=>`<button class="chip ${S.lead.has(d)?'on':''}" data-a="lead" data-v="${d}">${d} ${d===1?'Tag':'Tage'} vorher</button>`).join('')}</div></div></div>
+ <div class="stack"><div class="card stack s"><h2>Kalender abonnieren</h2><p class="small muted">Alle Fristen erscheinen in Outlook, Google oder Apple Kalender und aktualisieren sich selbst, wenn sich ein Termin ändert.</p><code class="lnk">webcal://foerderlotse.example/kalender/musterhof-7f3a.ics</code><div class="row"><button class="btn" data-a="cp" data-v="webcal://foerderlotse.example/kalender/musterhof-7f3a.ics">${ic('copy')} Link kopieren</button><span class="tag demo">Beispieladresse</span></div>
+ <details><summary class="small link" style="cursor:pointer">So geht es in Outlook</summary><ol class="small" style="margin:.5rem 0 0 1.2rem"><li>Kalender öffnen, „Kalender hinzufügen“ wählen.</li><li>„Aus dem Internet abonnieren“ wählen und den Link einfügen.</li><li>Namen vergeben, z. B. „Förderfristen“.</li></ol></details></div>
+ <div class="card"><h2>Darstellung</h2><div class="setrow"><div><b>Große Schrift</b><div class="small muted">Alle Texte etwa 15 % größer</div></div><button class="toggle ${S.big?'on':''}" data-a="big" role="switch" aria-checked="${S.big}" aria-label="Große Schrift"></button></div><div class="setrow"><div><b>Betriebsprofil</b><div class="small muted">Flächen, Tiere, Kulturen</div></div><button class="btn ghost sm" data-a="go" data-v="profil">Bearbeiten</button></div></div></div></div>`;
+
+V.hinweise=()=>topbar('Hinweise zum Klick-Dummy','Was dieser Dummy zeigt und was er nicht leistet.')+`<div class="two" style="grid-template-columns:1fr 1fr"><div class="card stack"><h2>Zweck</h2><p>Der Klick-Dummy veranschaulicht das Gestaltungskonzept aus Kapitel 6 der Masterarbeit. Er zeigt die Bedienabfolge und an jeder Ausgabe, woher sie stammt.</p>
+ <div class="stack s">${orig('rule','','')}<span class="small">Ergebnis folgt aus einer hinterlegten Regel und ist jederzeit gleich.</span>${orig('ki','','')}<span class="small">Sprachliche Erläuterung, gebunden an die angegebene Fundstelle.</span>${orig('undec','','')}<span class="small">Verlangt eine fachliche Beurteilung. Zuständig ist das Amt.</span></div></div>
+ <div class="card stack"><h2>Grenzen</h2><p>Der Dummy enthält keine Programmlogik, keine Wissensbasis und kein Sprachmodell. Alle Abläufe und Antworten sind vorgezeichnet.</p><p><b>Kein Anspruch auf Vollständigkeit.</b> Hinterlegt sind neun Programme. Beträge sind Planwerte, Kombinationsregeln, Grenzwerte, Unterlagenlisten, Schreiben und die Felder der Antragsmappe sind Beispiele und als solche gekennzeichnet.</p><p><b>Ohne Schnittstelle.</b> Daten kommen aus Dateien, die der Betrieb selbst exportiert. Mit einer Schnittstelle zum Antragssystem entfiele der Übertrag der Antragsmappe.</p><p class="small muted">Erstellt nach Vorgaben der Verfasserin mit dem KI-System Claude (Anthropic), November 2026.</p></div></div>`;
+
+V.profil=()=>{const ob=S.ob;const B=[
+ ()=>`<h1>Wir übernehmen, was es schon gibt.</h1><p class="muted">Sie laden Dateien hoch, die Sie selbst aus Ihren Programmen exportieren. Eine Verbindung zum Antragssystem des Landes besteht nicht.</p>${[['SHP','Flächen aus dem Agrarantrag','Export aus ELAISA · 148 Schläge · 1.512 ha','übernommen'],['CSV','Tierbestand','Auszug aus der HIT-Datenbank · 86 Mutterkühe','übernommen'],['XLS','Anbauplanung','Export aus der Ackerschlagkartei · 6 Kulturen','übernommen'],['PDF','Bescheide laufender Förderungen','4 Bescheide · Fristen und Auflagen erkannt','bitte prüfen']].map(r=>`<div class="card row nowrap"><span class="tag plain" style="min-width:48px;justify-content:center">${r[0]}</span><div style="flex:1"><b>${r[1]}</b><div class="small muted">${r[2]}</div></div><span class="tag ${r[3]==='übernommen'?'ok':'warn'}">${r[3]}</span></div>`).join('')}<p class="xs muted">Im Klick-Dummy sind die Dateien bereits eingelesen.</p>`,
+ ()=>`<h1>Stimmt das so?</h1><p class="muted">Bitte bestätigen Sie die übernommenen Angaben.</p><div class="card flush">${[['Rechtsform','eingetragene Genossenschaft','Bescheid'],['Zuständiges Amt','ALFF Altmark','Bescheid'],['Ackerland','1.180 ha','ELAISA-Export'],['Dauergrünland','332 ha','ELAISA-Export'],['davon in Natura-2000-Gebieten','64 ha','ELAISA-Export'],['Tierbestand','86 Mutterkühe, keine Milchabgabe','HIT-Auszug'],['Bewirtschaftung','konventionell','Bescheid']].map(r=>`<div class="todo"><div style="flex:1"><div class="small muted">${r[0]}</div><b>${r[1]}</b></div><span class="tag plain">${r[2]}</span><span class="tag ok">✓ stimmt</span></div>`).join('')}</div><p class="xs muted">Bankverbindung und Stammdaten des Antragstellers werden nicht abgefragt.</p>`,
+ ()=>`<h1>Zwei Fragen, die keine Datei beantwortet</h1>${[['Planen Sie in den nächsten zwei Jahren eine Investition?',['Stallumbau','Maschinen','Nein']],['Wer bearbeitet bei Ihnen den Agrarantrag?',['Ich selbst','Mitarbeitende','Landberatung']]].map(([q,o],i)=>`<div class="card stack s"><b>${q}</b><div class="chips">${o.map((x,j)=>`<label class="chip" style="display:inline-flex;gap:.4rem;align-items:center"><input type="radio" name="q${i}" ${j===0?'checked':''} style="accent-color:var(--pri)"> ${x}</label>`).join('')}</div></div>`).join('')}`];
+ return `<div class="wiz stack"><div class="row between"><span class="small muted">Betriebsprofil · Schritt ${ob+1} von 3</span><span class="tag demo">Beispieldaten</span></div><div class="pbar"><i style="width:${(ob+1)/3*100}%"></i></div>${B[ob]()}<div class="row between"><button class="btn ghost" data-a="obb" style="visibility:${ob?'visible':'hidden'}">Zurück</button><button class="btn pri" data-a="obn">${ob===2?'Profil speichern':'Weiter'}</button></div></div>`};
+
+/* ================= Router ================= */
+const ROUTES=Object.keys(V);
+function route(){if(!S.logged)return;let v=(location.hash||'').slice(1);if(!ROUTES.includes(v))v=S.obDone?'start':'profil';
+ S.view=v;$('#view').innerHTML=V[v]();after(v);
+ $$('#nav a, #tabbar a, .sfoot a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='anfrage'&&a.dataset.v==='fragen')));
+ $('#fab').style.display=['fragen','anfrage','profil','antrag'].includes(v)?'none':'';
+ closeAll();window.scrollTo(0,0)}
+function after(v){
+ if(v==='suche'){const k=$('#kw');k.addEventListener('input',()=>{S.kw=k.value;const pos=k.selectionStart;route();const n=$('#kw');n.focus();n.setSelectionRange(pos,pos)})}
+ if(v==='antrag'&&S.wz===1){const u=()=>{S.ha=+$('#haR').value;$('#haV').textContent=S.ha.toFixed(1).replace('.',',')+' ha';$('#haP').textContent=(S.ha/332*100).toFixed(1).replace('.',',')+' % des Dauergrünlands';$('#haE').textContent='ca. '+fmt(prem(S.ha))+' € im Jahr. Das erste Prozent wird mit 1.000 €/ha vergütet, weitere Flächen niedriger.'};$('#haR').oninput=u;u()}
+ if(v==='nachweise'){const live=()=>{const e={k:+$('#wk').value||0,c:+$('#wc').value||0};const b=wtCalc(e);const el=$('#wlive');const bad=b>WT_MAX,low=b<WT_MIN;el.className='box small '+(bad||low?'undec':'rule');el.innerHTML=`Besatz bei diesem Eintrag: <b class="num">${b.toFixed(2).replace('.',',')} GVE/ha</b>${bad?' · über der Obergrenze von 1,4. Vor dem Eintragen prüfen.':low?' · unter dem Mindestbesatz von 0,3.':' · im zulässigen Bereich.'} <span class="tag demo">Beispielgrenzen</span>`};['#wk','#wc'].forEach(s=>$(s).addEventListener('input',live));live()}
+ if(v==='fragen')initChat();
+ if(v==='anfrage'){const sync=()=>{S.aq.to=$('#aqTo').value;S.aq.topic=$('#aqTopic').value;S.aq.text=$('#aqText').value};['#aqTo','#aqTopic','#aqText'].forEach(s=>$(s).addEventListener('input',sync));$$('[data-inc]').forEach(c=>c.addEventListener('change',()=>{S.aq.inc[c.dataset.inc]=c.checked;if(S.aq.draft)$('#mailT').textContent=mailText()}))}
+ if(v==='start'&&!S.pushed&&!S.toastShown){S.toastShown=true;setTimeout(()=>{if(S.view==='start'&&!S.pushed)showPush()},1800)}
+}
+function showPush(){const t=$('#toast');t.innerHTML=`<div class="row between"><b>Termin geändert</b><span class="tag crit">neu</span></div><p class="small" style="margin:.35rem 0 .5rem">Das Weidetagebuch für Schlag 17 ist in diesem Jahr bis zum 31.10. abzugeben, zwei Monate früher als bisher.</p>${orig('rule','Merkblatt AUKM, Fassung 04/2026','Nachweise','Beispiel')}<div class="row" style="margin-top:.6rem"><button class="btn sm" data-a="push">In meine Fristen übernehmen</button><button class="btn ghost sm" data-a="toastx">Später</button></div>`;t.classList.add('in')}
+
+/* ================= Chat ================= */
+function addMsg(h,c){const m=document.createElement('div');m.className='msg '+c;m.innerHTML=h;$('#msgs').appendChild(m);$('#msgs').scrollTop=1e6;return m}
+function initChat(){S.chat=S.chat||[];$('#msgs').innerHTML='';addMsg('<p>Guten Tag. Ich beantworte Fragen zu Förderprogrammen in Sachsen-Anhalt und nenne zu jeder Antwort die Stelle im Merkblatt. Wählen Sie eine Beispielfrage oder schreiben Sie Ihre eigene.</p>','a');
+ S.chat.forEach(([h,c])=>addMsg(h,c));
+ $('#sugg').innerHTML=QA.map((x,i)=>`<button class="chip" data-a="qa" data-v="${i}">${x.q}</button>`).join('');
+ $('#chatForm').addEventListener('submit',e=>{e.preventDefault();const v=$('#chatIn').value.trim();if(!v)return;$('#chatIn').value='';const i=QA.findIndex(x=>x.q.toLowerCase()===v.toLowerCase());ask(i,v)})}
+function ask(i,free){const uq=esc(free||QA[i].q);addMsg(uq,'u');S.chat.push([uq,'u']);const t=addMsg('<span class="typing"><i></i><i></i><i></i></span>','a');
+ setTimeout(()=>{let h;if(i<0){h=`<p>Im Klick-Dummy sind nur die Beispielfragen hinterlegt. In der Anwendung würde hier die freigegebene Sammlung der ÄLFF durchsucht. Findet sich dort keine passende Stelle, erhalten Sie keine Auskunft, sondern den Hinweis auf das zuständige Amt.</p><span class="tag demo" style="align-self:flex-start">Hinweis zum Dummy</span>`}
+  else{const x=QA[i];h=`${x.undec?'<span class="tag warn" style="align-self:flex-start">Nicht entscheidbar</span>':''}<p>${x.a}</p>${x.undec?`<button class="btn sm" data-a="ask" data-v="afp" style="align-self:flex-start">${ic('mail')} Anfrage ans Amt vorbereiten</button>`:''}${x.rule?`<span class="tag rule" style="align-self:flex-start">${x.rule}</span>`:''}${orig(x.undec?'undec':'ki',x.s[0],x.s[1],'Beispieltext')}`}
+  t.innerHTML=h;S.chat.push([h,'a']);$('#msgs').scrollTop=1e6},900)}
+
+/* ================= Aktionen ================= */
+const ACT={
+ go:v=>{location.hash=v;if(location.hash==='#'+v)route()},
+ back:()=>{S.showD=false;route()},
+ quick:()=>{S.kw='';location.hash='suche';setTimeout(()=>$('#kw')&&$('#kw').focus(),50)},
+ menu:()=>{$('#side').classList.add('open');$('#scrim').classList.add('in')},
+ close:closeAll,
+ logout:()=>{S.logged=false;$('#app').style.display='none';$('#tabbar').style.display='none';$('#fab').style.display='none';$('#login').style.display='grid'},
+ done:v=>{S.done.has(v)?S.done.delete(v):S.done.add(v);if(['n2000','sa','foto','aend','wt'].includes(v)){S.done.has(v)?S.saisonDone.add(v):S.saisonDone.delete(v)}route();if(S.done.has(v))snack('Als erledigt markiert.')},
+ sdone:v=>{S.saisonDone.has(v)?S.saisonDone.delete(v):S.saisonDone.add(v);if(DUE.find(d=>d.id===v)){S.saisonDone.has(v)?S.done.add(v):S.done.delete(v)}route()},
+ push:()=>{S.pushed=true;const w=DUE.find(d=>d.id==='wt');w.date='31.10.';w.doy=304;w.changed=true;$('#toast').classList.remove('in');route();snack('Neuer Termin 31.10. übernommen. Kalender und Erinnerungen sind angepasst.')},
+ toastx:()=>$('#toast').classList.remove('in'),
+ notif:()=>modal(`<div class="row between"><h2>Mitteilungen</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><div class="stack" style="margin-top:1rem">${!S.pushed?`<div class="box crit small"><b>Termin geändert:</b> Weidetagebuch Schlag 17 bis 31.10. <button class="link" data-a="push">Übernehmen</button></div>`:''}<div class="box sun small"><b>2 Schreiben vom Amt</b> warten auf Sie. <button class="link" data-a="go" data-v="post">Öffnen</button></div><div class="box plain small"><b>Noch 2 Tage:</b> Natura-2000-Bestätigung beim Landkreis.</div></div>`),
+ flt:v=>{S.flt=v;S.kw='';route()},
+ kwclr:()=>{S.kw='';route()},
+ sel:v=>{S.sel=v;S.showD=true;if(S.view!=='suche'){S.kw='';S.flt='Alle';location.hash='suche'}else route()},
+ pick:v=>{S.picked.has(v)?S.picked.delete(v):S.picked.add(v);route()},
+ combo:()=>{const p=[...S.picked];const conflict=S.picked.has('or1d')&&S.picked.has('or5');
+  modal(`<div class="row between"><h2>Lassen sich die Förderungen kombinieren?</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><div class="stack" style="margin-top:1rem">${p.map(id=>`<div class="box plain small"><b>${F.find(f=>f.id===id).n}</b></div>`).join('')}
+  <div class="box rule stack s"><b>Ergebnis der Kombinationsprüfung</b>${conflict?`<div class="check"><i class="q">!</i><span>ÖR 1d und ÖR 5 nicht auf derselben Teilfläche. Beide waren für Schlag 21 vorgesehen. Altgrasstreifen auf Schlag 24, Schlag 21 bleibt für die Kennarten.</span></div>`:''}<div class="check"><i class="y">✓</i><span>Kein Konflikt mit der laufenden AUKM auf Schlag 17.</span></div>${orig('rule','Merkblatt Öko-Regelungen 2026','Kombinationstabelle','Beispielregel')}</div>
+  <p class="small muted">Das Antragsprogramm warnt nicht in jedem Fall vor unzulässigen Kombinationen. Diese Prüfung findet deshalb vorher statt.</p><div class="row"><button class="btn" data-a="wiz" data-v="or1d">Antrag für ÖR 1d vorbereiten</button><button class="btn ghost" data-a="close">Zurück zur Auswahl</button></div></div>`)},
+ wiz:v=>{S.wzFor=v;S.wz=0;location.hash='antrag';route()},
+ wzn:()=>{S.wz++;route()},wzb:()=>{S.wz--;route()},
+ cp:(v,b)=>{try{navigator.clipboard.writeText(v)}catch(e){}const o=b.innerHTML;b.innerHTML=ic('check')+' Kopiert';setTimeout(()=>b.innerHTML=o,1400)},
+ cpall:(v,b)=>{const t=$$('.frow').map(r=>r.children[0].textContent+': '+r.children[1].textContent).join('\n');ACT.cp(t,b)},
+ addalt:()=>{if(!S.extra.find(d=>d.id==='alt'))S.extra.push({id:'alt',lvl:'g',t:'Altgrasstreifen auf Schlag 24 stehen lassen',d:'ÖR 1d · keine Mahd oder Beweidung vor dem 01.09.',date:'01.09.',doy:244,go:'meine',s:['Merkblatt Öko-Regelungen 2026','ÖR 1d']});S.saisonDone.add('s9');location.hash='start';snack('Frist und Auflage stehen jetzt in Ihrer Übersicht.')},
+ obn:()=>{if(S.ob<2){S.ob++;route()}else{S.obDone=true;location.hash='start'}},obb:()=>{S.ob--;route()},
+ wtadd:()=>{const e={von:$('#wvon').value||'29.04.',bis:$('#wbis').value,k:+$('#wk').value||0,c:+$('#wc').value||0};if(WT.length&&!WT[WT.length-1].bis)WT[WT.length-1].bis='28.04.';WT.push(e);route();snack('Weidegang eingetragen.')},
+ wtexp:()=>modal(`<div class="row between"><h2>Export für das Amt</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><p class="small muted" style="margin:.4rem 0 1rem">Weidetagebuch 2026 · Schlag 17 · im Format der Vorlage des ALFF</p><div class="tw"><table class="t"><thead><tr><th>Zeitraum</th><th>Tiere</th><th>GVE/ha</th></tr></thead><tbody>${WT.map(e=>`<tr><td>${e.von} – ${e.bis||'laufend'}</td><td>${e.k} Kühe, ${e.c} Kälber</td><td>${wtCalc(e).toFixed(2).replace('.',',')}</td></tr>`).join('')}</tbody></table></div><div class="box undec small" style="margin-top:1rem">1 Eintrag mit Hinweis. Bitte vor der Abgabe prüfen.</div><div class="row" style="margin-top:1rem"><button class="btn" data-a="snackv" data-v="PDF erstellt (im Klick-Dummy nur angedeutet).">${ic('file')} PDF erstellen</button><span class="tag demo">Beispielvorlage</span></div>`),
+ dtab:v=>{S.docTab=v;route()},
+ upl:v=>{const it=DOCS[S.docTab].items[+v];it.st='ok';it.note=it.n.startsWith('Antragsformular')?'Fassung 2026 erkannt. Pflichtfelder ausgefüllt.':it.n.startsWith('Drei')?'3 von 3 vorhanden.':'Hochgeladen und gelesen.';route();$('#bdDocs').textContent=docCount('umbau')+'/10';snack('Unterlage geprüft und abgelegt.')},
+ snackv:v=>{closeAll();snack(v)},
+ letter:v=>{S.letter=v||null;if(v){S.reading=true;route();setTimeout(()=>{S.reading=false;if(S.view==='post')route()},1100)}else route()},
+ takeDue:v=>{S.done.add('take_'+v);const d=DUE.find(x=>x.id===v);route();snack(`Frist ${d.date} steht in Ihrer Übersicht und im Kalender.`)},
+ ask:v=>{if(v==='anh'){S.aq={to:'ALFF Altmark · Flächenförderung',topic:'Stellungnahme zur Anhörung, Extensive Beweidung 2025, Schlag 17',text:'Im Weidetagebuch 2025 wurden für den Zeitraum 10.06. bis 24.06. versehentlich nur die Kälber übertragen. Laut HIT-Datenbank standen in dieser Zeit 14 Mutterkühe mit Kälbern auf Schlag 17. Wir bitten, den korrigierten Auszug zu berücksichtigen.',inc:{name:true,bnr:true,vorhaben:false,angebot:false},draft:false}}
+  else if(v==='foto'){S.aq={to:'ALFF Altmark · Flächenförderung',topic:'Rückfrage zum Fotoauftrag Schlag 31',text:'Auf Schlag 31 steht Winterraps, der Bestand ist wegen Hagelschäden lückig. Reichen Fotos der lückigen Stellen aus?',inc:{name:true,bnr:true,vorhaben:false,angebot:false},draft:false}}
+  else if(v==='hs'){S.aq={to:'ALFF Anhalt · Herdenschutz',topic:'Herdenschutz für Mutterkuhhaltung',text:'Sind wolfsabweisende Zäune für Mutterkuhherden nach der aktuellen Richtlinie förderfähig?',inc:{name:true,bnr:false,vorhaben:true,angebot:false},draft:false}}
+  else S.aq.draft=false;location.hash='anfrage';route()},
+ draft:()=>{S.aq.draft=true;route()},
+ cpmail:(v,b)=>ACT.cp(mailText(),b),
+ sent:()=>{S.anfragen.unshift({t:S.aq.topic,to:S.aq.to,st:'Antwort ausstehend',d:'28.04.'});S.aq.draft=false;location.hash='fragen';snack('Anfrage abgelegt. Wir erinnern Sie, wenn nach 10 Tagen keine Antwort da ist.')},
+ ans:v=>{S.anfragen[+v].st='Antwort abgelegt';S.anfragen[+v].ans='Antwort des Amts (im Klick-Dummy nicht hinterlegt).';route()},
+ qa:v=>ask(+v),
+ rem:v=>{S.rem[v]=!S.rem[v];route()},
+ lead:v=>{v=+v;S.lead.has(v)?S.lead.delete(v):S.lead.add(v);route()},
+ big:()=>{S.big=!S.big;document.documentElement.classList.toggle('big',S.big);route()},
+ excerpt:v=>{const [src,sec]=v.split('|');modal(`<div class="row between"><h2>${src}</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><p class="small muted">${sec}</p><div class="paper" style="margin:1rem 0">${EXC[sec]||'„… An dieser Stelle stünde der Wortlaut der Fundstelle aus dem Merkblatt, mit Hervorhebung des Satzes, auf den sich die Antwort stützt …“'}</div><div class="row"><span class="tag demo">Beispieltext, nicht der Wortlaut des Merkblatts</span></div><p class="small muted" style="margin-top:.8rem">In der Anwendung öffnet sich hier das Dokument an der zitierten Stelle, damit Sie die Antwort selbst prüfen können.</p>`)}
+};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const f=ACT[a.dataset.a];if(!f)return;if(a.tagName==='A'||a.dataset.a!=='go')e.preventDefault();f(a.dataset.v,a,e)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();$('#toast').classList.remove('in')}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&S.logged){e.preventDefault();ACT.quick()}});
+window.addEventListener('hashchange',route);
+$('#loginForm').addEventListener('submit',e=>{e.preventDefault();S.logged=true;$('#login').style.display='none';$('#app').style.display='grid';$('#tabbar').style.removeProperty('display');location.hash='profil';route()});
+
+</script>
+</body>
+</html>
