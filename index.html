@@ -90,7 +90,7 @@ label.f{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:
 .lg-art .stack p{font-size:clamp(.9rem,1.6vh,1.05rem)}
 .film{position:relative;z-index:1;flex:none;height:min(392px,calc(100vh - 380px),calc((100vw * .512 - 6rem) * .633));height:min(392px,calc(100dvh - 380px),calc((100vw * .512 - 6rem) * .633));min-height:200px;width:auto;max-width:100%;aspect-ratio:600/380;border-radius:18px;overflow:hidden;background:#122219;border:1px solid #2A4235;box-shadow:0 30px 60px rgba(0,0,0,.35)}
 .film svg{width:100%;height:100%;display:block}
-.film *{animation-duration:8s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.film *{animation-duration:5s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
 .film.paused *{animation-play-state:paused!important}
 .sa{animation-name:sceneA}@keyframes sceneA{0%,45%{opacity:1}52%,96%{opacity:0}100%{opacity:1}}
 .sb{opacity:0;animation-name:sceneB}@keyframes sceneB{0%,50%{opacity:0}58%,95%{opacity:1}100%{opacity:0}}
@@ -98,8 +98,8 @@ label.f{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:
 .lap{transform-box:fill-box;transform-origin:50% 60%;animation-name:lap}@keyframes lap{0%,46%{transform:none}57%,95%{transform:translateY(-14px) scale(1.62)}100%{transform:none}}
 .scrA{animation-name:scrA}@keyframes scrA{0%,48%{opacity:1}54%,96%{opacity:0}100%{opacity:1}}
 .hh,.mh{transform-origin:0 0;animation-timing-function:linear}
-.hh{animation-name:hh}@keyframes hh{0%{transform:rotate(135deg)}45%,94%{transform:rotate(345deg)}100%{transform:rotate(135deg)}}
-.mh{animation-name:mh}@keyframes mh{0%{transform:rotate(180deg)}45%,100%{transform:rotate(2700deg)}}
+.hh{animation-name:hh}@keyframes hh{0%{transform:rotate(150deg);animation-timing-function:steps(6,end)}45%{transform:rotate(330deg);animation-timing-function:linear}94%{transform:rotate(330deg)}100%{transform:rotate(150deg)}}
+.mh{animation:none!important}
 .pi{transform-box:fill-box;transform-origin:50% 0}
 .p1{animation-name:pi1}.p2{animation-name:pi2}.p3{animation-name:pi3}
 @keyframes pi1{0%,8%{opacity:0;transform:scale(.6)}12%{opacity:1;transform:rotate(-4deg)}20%,30%,40%{transform:rotate(-7deg)}25%,35%{transform:rotate(-2deg)}44%{opacity:1;transform:rotate(-2deg)}53%{opacity:0;transform:translate(70px,130px) scale(.1)}100%{opacity:0}}
@@ -969,11 +969,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();palClose
 window.addEventListener('hashchange',route);
 $('#loginForm').addEventListener('submit',e=>{e.preventDefault();S.logged=true;$('#login').style.display='none';$('#app').style.display='grid';$('#tabbar').style.removeProperty('display');location.hash=S.obDone?'start':'einrichtung';route()});
 /* ================= Kurzfilm Anmeldeseite ================= */
-(function(){const film=$('#film');if(!film)return;const D=8000;let t0=performance.now(),off=0,pAt=null;
+(function(){const film=$('#film');if(!film)return;const D=5000;let t0=performance.now(),off=0,pAt=null;
  const tEl=$('#clkT'),lEl=$('#clkL'),box=tEl.parentElement;
  function tick(){const now=pAt??performance.now();const ph=(((now-t0-off)%D)+D)%D/D;
-  if(ph<.45){const m=16*60+30+Math.round(ph/.45*420);tEl.textContent=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');lEl.textContent='noch im Büro';box.classList.remove('done')}
-  else if(ph<.55){tEl.textContent='23:30';lEl.textContent='noch im Büro'}
+  if(ph<.45){tEl.textContent=(17+Math.min(6,Math.floor(ph/.45*6)))+':00';lEl.textContent='noch im Büro';box.classList.remove('done')}
+  else if(ph<.55){tEl.textContent='23:00';lEl.textContent='noch im Büro'}
   else{tEl.textContent='16:35';lEl.textContent='erledigt';box.classList.add('done')}
   if($('#login').style.display!=='none')requestAnimationFrame(tick);else setTimeout(()=>requestAnimationFrame(tick),500)}
  requestAnimationFrame(tick);
