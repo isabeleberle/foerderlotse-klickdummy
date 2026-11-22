@@ -220,6 +220,52 @@ code.lnk{display:block;background:#F3F6F4;border:1px solid var(--line);border-ra
 .snack.in{transform:translate(-50%,0);opacity:1;visibility:visible}
 #tabbar{display:none}
 #fab{position:fixed;right:1.4rem;bottom:1.4rem;z-index:30;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+
+/* Einrichtung */
+body.setup #side,body.setup #tabbar,body.setup #fab{display:none!important}
+body.setup #app{grid-template-columns:1fr}
+body.setup main{margin:0 auto;max-width:820px;padding-top:2.5rem}
+.setup-brand{display:flex;align-items:center;gap:.6rem;font-weight:650;font-size:1.15rem;letter-spacing:-.03em;margin-bottom:.6rem}
+.setup-brand svg{width:34px;height:34px}
+/* Betriebsprofil */
+.pf{max-width:1120px;display:flex;flex-direction:column;gap:2.2rem}
+.pf-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+.pf-head .ov{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--pri)}
+.pf-head h1{font-size:2.3rem;margin:.2rem 0 .3rem}
+.pf-how{border-left:4px solid var(--lime);padding:.2rem 0 .2rem 1rem;max-width:72ch;color:#2D3A33}
+.pf-note{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;color:var(--rule);font-weight:550}
+.pf-note svg{width:20px;height:20px}
+.figs{display:flex;flex-wrap:wrap;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.figs div{flex:1;min-width:140px;padding:1rem 1.2rem 1rem 0;display:flex;flex-direction:column}
+.figs div+div{border-left:1px solid var(--line);padding-left:1.2rem}
+.figs b{font-size:2.4rem;font-weight:700;letter-spacing:-.05em;line-height:1.1}
+.figs span{color:var(--mut);font-size:.9rem}
+.pf-sec h2{margin-bottom:.3rem}
+.kbar{display:flex;height:34px;border-radius:8px;overflow:hidden;gap:2px;margin:.8rem 0 .7rem;position:relative}
+.kbar i{display:block;min-width:4px}
+.klg{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;font-size:.88rem;margin-bottom:.4rem}
+.klg span{display:inline-flex;align-items:center;gap:.4rem}
+.klg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.lg-row{display:grid;grid-template-columns:1.1fr 1.3fr 1.2fr 1.2fr auto;gap:1rem;align-items:baseline;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.lg-h{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:650;border-bottom:1px solid var(--ink);margin-top:.8rem}
+.lg-g{font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pri);padding:1.1rem 0 .2rem}
+.lg-l{color:var(--mut)}
+.lg-v{font-weight:600}
+.lg-s{font-size:.85rem;color:var(--mut);display:inline-flex;gap:.35rem;align-items:center}
+.lg-s svg{width:14px;height:14px;flex:none}
+.lg-u{font-size:.85rem;color:#2D3A33}
+.lg-e{color:var(--pri);font-weight:600;font-size:.88rem;opacity:.0;transition:.15s}
+.lg-row:hover .lg-e,.lg-e:focus-visible{opacity:1}
+.pf-two{display:grid;grid-template-columns:1.2fr 1fr;gap:3rem}
+.tline{list-style:none;margin-top:.8rem;border-left:2px solid var(--line);padding-left:1.2rem;display:flex;flex-direction:column;gap:1rem}
+.tline li{position:relative;display:flex;flex-direction:column}
+.tline li::before{content:"";position:absolute;left:calc(-1.2rem - 7px);top:.35rem;width:12px;height:12px;border-radius:50%;background:var(--pri)}
+.tline li.tl-next::before{background:#fff;border:2px dashed #9AA8A0}
+.tline li.tl-next{color:var(--mut)}
+.tline span{font-size:.92rem}
+.nolist{list-style:none;margin:.8rem 0;display:flex;flex-direction:column;gap:.5rem}
+.nolist li{display:flex;gap:.5rem;align-items:center}
+.nolist svg{width:16px;height:16px;color:var(--red)}
 /* Responsiv */
 @media (max-width:1180px){.two{grid-template-columns:1fr!important}.kpis{grid-template-columns:repeat(2,1fr)}.chatw{grid-template-columns:1fr}.d2{grid-template-columns:1fr}}
 @media (max-width:900px){
@@ -246,6 +292,10 @@ code.lnk{display:block;background:#F3F6F4;border:1px solid var(--line);border-ra
  .kpis{grid-template-columns:repeat(2,1fr)!important}
  .top .row .btn{flex:1}
  .mobhide{display:none!important}
+ .lg-row{grid-template-columns:1fr auto;gap:.2rem .8rem}.lg-h{display:none}.lg-l{grid-column:1/-1;font-size:.85rem}.lg-s,.lg-u{grid-column:1/-1}.lg-e{opacity:1;grid-row:2;grid-column:2}
+ .pf-two{grid-template-columns:1fr;gap:2rem}
+ .figs b{font-size:1.9rem}.figs div{min-width:45%}.figs div+div{border-left:0;padding-left:0}
+ .pf-head h1{font-size:1.7rem}
  .tl .ml{display:none}
  .tl .m{font-size:.62rem}
 }
@@ -297,7 +347,7 @@ code.lnk{display:block;background:#F3F6F4;border:1px solid var(--line);border-ra
    <a href="#fragen" data-v="fragen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg> Fragen und Anfragen</a>
   </nav>
   <div class="sfoot nav">
-   <button class="farm" data-a="go" data-v="profil"><b>Agrargenossenschaft Musterhof eG</b><span class="xs">1.512 ha · ALFF Altmark</span></button>
+   <button class="farm" data-a="go" data-v="profil" id="farmBtn"><b>Agrargenossenschaft Musterhof eG</b><span class="xs">1.512 ha · ALFF Altmark</span><span class="xs" style="display:block;color:var(--lime);margin-top:.3rem">Betriebsprofil →</span></button>
    <a href="#einstellungen" data-v="einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Erinnerungen und Kalender</a>
    <a href="#hinweise" data-v="hinweise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Hinweise zum Klick-Dummy</a>
    <a href="#" data-a="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg> Abmelden</a>
@@ -333,7 +383,7 @@ function modal(h){$('#modal').innerHTML=h;$('#modal').classList.add('in');$('#sc
 function closeAll(){$('#modal').classList.remove('in');$('#scrim').classList.remove('in');$('#side').classList.remove('open')}
 
 /* ================= Daten (Beispiele) ================= */
-const S={logged:false,ob:0,obDone:false,done:new Set(),pushed:false,picked:new Set(),sel:'or1d',kw:'',flt:'Alle',wz:0,ha:3.3,showD:false,
+const S={logged:false,ob:0,obDone:(()=>{try{return localStorage.getItem('fl_setup')==='1'}catch(e){return false}})(),pf:{},pfNew:null,pfNote:'',mk:86,done:new Set(),pushed:false,picked:new Set(),sel:'or1d',kw:'',flt:'Alle',wz:0,ha:3.3,showD:false,
  letter:null,reading:false,chatInit:false,big:false,rem:{mail:true,sms:false,push:true,week:true},lead:new Set([14,2]),docTab:'umbau',
  aq:{to:'ALFF Altmark · Investitionsförderung',topic:'Förderfähigkeit eines Ersatzes',text:'Ist der Kauf eines neuen Hofladers als Ersatz für unseren alten förderfähig? Der neue hat mehr Hubkraft und einen Elektroantrieb.',inc:{name:true,bnr:false,vorhaben:true,angebot:true},draft:false},
  anfragen:[{t:'Natura-2000-Bestätigung: Reicht die Bestätigung von 2025?',to:'Landkreis, Untere Naturschutzbehörde',st:'Antwort abgelegt',d:'14.04.',ans:'Nein, die Bestätigung ist für jedes Antragsjahr neu einzuholen.'}],
@@ -604,20 +654,61 @@ V.einstellungen=()=>topbar('Erinnerungen und Kalender','Damit keine Frist verlor
 
 V.hinweise=()=>topbar('Hinweise zum Klick-Dummy','Was dieser Dummy zeigt und was er nicht leistet.')+`<div class="two" style="grid-template-columns:1fr 1fr"><div class="card stack"><h2>Zweck</h2><p>Der Klick-Dummy veranschaulicht das Gestaltungskonzept aus Kapitel 6 der Masterarbeit. Er zeigt die Bedienabfolge und an jeder Ausgabe, woher sie stammt.</p>
  <div class="stack s">${orig('rule','','')}<span class="small">Ergebnis folgt aus einer hinterlegten Regel und ist jederzeit gleich.</span>${orig('ki','','')}<span class="small">Sprachliche Erläuterung, gebunden an die angegebene Fundstelle.</span>${orig('undec','','')}<span class="small">Verlangt eine fachliche Beurteilung. Zuständig ist das Amt.</span></div></div>
- <div class="card stack"><h2>Grenzen</h2><p>Der Dummy enthält keine Programmlogik, keine Wissensbasis und kein Sprachmodell. Alle Abläufe und Antworten sind vorgezeichnet.</p><p><b>Kein Anspruch auf Vollständigkeit.</b> Hinterlegt sind neun Programme. Beträge sind Planwerte, Kombinationsregeln, Grenzwerte, Unterlagenlisten, Schreiben und die Felder der Antragsmappe sind Beispiele und als solche gekennzeichnet.</p><p><b>Ohne Schnittstelle.</b> Daten kommen aus Dateien, die der Betrieb selbst exportiert. Mit einer Schnittstelle zum Antragssystem entfiele der Übertrag der Antragsmappe.</p><p class="small muted">Erstellt nach Vorgaben der Verfasserin mit dem KI-System Claude (Anthropic), November 2026.</p></div></div>`;
+ <div class="card stack"><h2>Grenzen</h2><p>Der Dummy enthält keine Programmlogik, keine Wissensbasis und kein Sprachmodell. Alle Abläufe und Antworten sind vorgezeichnet.</p><p><b>Kein Anspruch auf Vollständigkeit.</b> Hinterlegt sind neun Programme. Beträge sind Planwerte, Kombinationsregeln, Grenzwerte, Unterlagenlisten, Schreiben und die Felder der Antragsmappe sind Beispiele und als solche gekennzeichnet.</p><p><b>Ohne Schnittstelle.</b> Daten kommen aus Dateien, die der Betrieb selbst exportiert. Mit einer Schnittstelle zum Antragssystem entfiele der Übertrag der Antragsmappe.</p><p class="small muted">Erstellt nach Vorgaben der Verfasserin mit dem KI-System Claude (Anthropic), November 2026.</p><button class="btn ghost sm" data-a="reset" style="align-self:flex-start">Einrichtung erneut zeigen</button></div></div>`;
 
-V.profil=()=>{const ob=S.ob;const B=[
+V.einrichtung=()=>{const ob=S.ob;const B=[
  ()=>`<h1>Wir übernehmen, was es schon gibt.</h1><p class="muted">Sie laden Dateien hoch, die Sie selbst aus Ihren Programmen exportieren. Eine Verbindung zum Antragssystem des Landes besteht nicht.</p>${[['SHP','Flächen aus dem Agrarantrag','Export aus ELAISA · 148 Schläge · 1.512 ha','übernommen'],['CSV','Tierbestand','Auszug aus der HIT-Datenbank · 86 Mutterkühe','übernommen'],['XLS','Anbauplanung','Export aus der Ackerschlagkartei · 6 Kulturen','übernommen'],['PDF','Bescheide laufender Förderungen','4 Bescheide · Fristen und Auflagen erkannt','bitte prüfen']].map(r=>`<div class="card row nowrap"><span class="tag plain" style="min-width:48px;justify-content:center">${r[0]}</span><div style="flex:1"><b>${r[1]}</b><div class="small muted">${r[2]}</div></div><span class="tag ${r[3]==='übernommen'?'ok':'warn'}">${r[3]}</span></div>`).join('')}<p class="xs muted">Im Klick-Dummy sind die Dateien bereits eingelesen.</p>`,
  ()=>`<h1>Stimmt das so?</h1><p class="muted">Bitte bestätigen Sie die übernommenen Angaben.</p><div class="card flush">${[['Rechtsform','eingetragene Genossenschaft','Bescheid'],['Zuständiges Amt','ALFF Altmark','Bescheid'],['Ackerland','1.180 ha','ELAISA-Export'],['Dauergrünland','332 ha','ELAISA-Export'],['davon in Natura-2000-Gebieten','64 ha','ELAISA-Export'],['Tierbestand','86 Mutterkühe, keine Milchabgabe','HIT-Auszug'],['Bewirtschaftung','konventionell','Bescheid']].map(r=>`<div class="todo"><div style="flex:1"><div class="small muted">${r[0]}</div><b>${r[1]}</b></div><span class="tag plain">${r[2]}</span><span class="tag ok">✓ stimmt</span></div>`).join('')}</div><p class="xs muted">Bankverbindung und Stammdaten des Antragstellers werden nicht abgefragt.</p>`,
  ()=>`<h1>Zwei Fragen, die keine Datei beantwortet</h1>${[['Planen Sie in den nächsten zwei Jahren eine Investition?',['Stallumbau','Maschinen','Nein']],['Wer bearbeitet bei Ihnen den Agrarantrag?',['Ich selbst','Mitarbeitende','Landberatung']]].map(([q,o],i)=>`<div class="card stack s"><b>${q}</b><div class="chips">${o.map((x,j)=>`<label class="chip" style="display:inline-flex;gap:.4rem;align-items:center"><input type="radio" name="q${i}" ${j===0?'checked':''} style="accent-color:var(--pri)"> ${x}</label>`).join('')}</div></div>`).join('')}`];
- return `<div class="wiz stack"><div class="row between"><span class="small muted">Betriebsprofil · Schritt ${ob+1} von 3</span><span class="tag demo">Beispieldaten</span></div><div class="pbar"><i style="width:${(ob+1)/3*100}%"></i></div>${B[ob]()}<div class="row between"><button class="btn ghost" data-a="obb" style="visibility:${ob?'visible':'hidden'}">Zurück</button><button class="btn pri" data-a="obn">${ob===2?'Profil speichern':'Weiter'}</button></div></div>`};
+ return `<div class="wiz stack setup-w"><div class="setup-brand">${LOGO}<span>förderlotse</span><span class="tag plain">Einrichtung · nur beim ersten Start</span></div><div class="row between"><span class="small muted">Schritt ${ob+1} von 3 · danach finden Sie alles unter „Betriebsprofil“</span><span class="tag demo">Beispieldaten</span></div><div class="pbar"><i style="width:${(ob+1)/3*100}%"></i></div>${B[ob]()}<div class="row between"><button class="btn ghost" data-a="obb" style="visibility:${ob?'visible':'hidden'}">Zurück</button><button class="btn pri" data-a="obn">${ob===2?'Einrichtung abschließen':'Weiter'}</button></div></div>`};
+
+/* ---------- Betriebsprofil (laufend) ---------- */
+const PF=[
+ ['Betrieb',[
+  ['rf','Rechtsform','eingetragene Genossenschaft','Bescheid AFP 2025','28.04.',['Investitionsförderung','Niederlassungsbeihilfe']],
+  ['amt','Zuständiges Amt','ALFF Altmark','Bescheid Sammelantrag 2025','28.04.',['alle Programme']],
+  ['bw','Bewirtschaftung','konventionell','Bescheid Sammelantrag 2025','28.04.',['Öko-Regelungen']],
+  ['bear','Bearbeitung des Antrags','im Betrieb, durch die Büroleitung','Ihre Antwort','28.04.',['Erinnerungen']]]],
+ ['Flächen',[
+  ['al','Ackerland','1.180 ha · 6 Kulturen','ELAISA-Export','27.04.',['ÖR 1a','ÖR 2']],
+  ['gl','Dauergrünland','332 ha','ELAISA-Export','27.04.',['ÖR 1d','ÖR 4','ÖR 5']],
+  ['n2','davon in Natura-2000-Gebieten','64 ha','ELAISA-Export','27.04.',['ÖR 7']],
+  ['sl','Schläge','148','ELAISA-Export','27.04.',['Kombinationsprüfung','Skizzen']]]],
+ ['Tiere',[
+  ['mk','Mutterkühe','86 Tiere','HIT-Auszug','27.04.',['Zahlung für Mutterkühe','Weidetagebuch']],
+  ['milch','Milchabgabe','keine','HIT-Auszug','27.04.',['Zahlung für Mutterkühe']]]],
+ ['Planung',[
+  ['inv','Geplante Investition','Stallumbau, in den nächsten zwei Jahren','Ihre Antwort','28.04.',['Investitionsförderung']]]]];
+const KULT=[['Winterweizen',420,'#C9B458'],['Winterraps',260,'#E6CF3B'],['Silomais',190,'#8FB35A'],['Wintergerste',150,'#D9C789'],['Luzerne',120,'#5E9E6E'],['Sommergerste',40,'#B9AE7E']];
+V.profil=()=>{const row=([k,l,v,src,d,use])=>`<div class="lg-row"><span class="lg-l">${l}</span><span class="lg-v">${S.pf[k]??v}${S.pfNew===k?' <span class="tag ok">geändert</span>':''}</span><span class="lg-s">${src.startsWith('Ihre')?ic('chat'):ic('file')}${src} · ${d}</span><span class="lg-u"><span class="deskhide muted">zählt für: </span>${use.join(', ')}</span><button class="lg-e" data-a="pfedit" data-v="${k}" aria-label="${l} ändern">Ändern</button></div>`;
+ return `<div class="pf">
+ <div class="pf-head"><div><span class="ov">Betriebsprofil</span><h1>Agrargenossenschaft Musterhof eG</h1><p class="muted">Altmarkkreis Salzwedel · ALFF Altmark · seit 28.04.2026 im FörderLotsen</p></div><button class="btn ghost" data-a="pfup">${ic('up')} Neue Datei hochladen</button></div>
+ <div class="pf-how"><b>So hält sich Ihr Profil aktuell.</b> Eingerichtet wurde es einmal aus Ihren Dateien. Seitdem liest die Plattform neue Exporte und Bescheide selbst ein. Sie ändern hier nur, was sich im Betrieb ändert. Jede Änderung prüft alle Förderungen neu.</div>
+ ${S.pfNote?`<div class="pf-note">${ic('rule')}<span>${S.pfNote}</span><button class="link small" data-a="go" data-v="suche">Ergebnis ansehen →</button></div>`:''}
+ <div class="figs">${[['1.512','ha Fläche'],['1.180','ha Ackerland'],['332','ha Dauergrünland'],[String(S.mk),'Mutterkühe'],['148','Schläge']].map(([n,l])=>`<div><b class="num">${n}</b><span>${l}</span></div>`).join('')}</div>
+ <section class="pf-sec"><h2>Was auf Ihren Flächen wächst</h2>
+  <div class="kbar">${KULT.map(([n,h,c])=>`<i style="flex:${h};background:${c}" title="${n} ${h} ha"></i>`).join('')}<i style="flex:332;background:#7DBB6A" title="Dauergrünland 332 ha"></i></div>
+  <div class="klg">${KULT.map(([n,h,c])=>`<span><i style="background:${c}"></i>${n} <b class="num">${h} ha</b></span>`).join('')}<span><i style="background:#7DBB6A"></i>Dauergrünland <b class="num">332 ha</b></span><span><i style="background:repeating-linear-gradient(45deg,#1F8A4C 0 3px,transparent 3px 6px)"></i>davon Natura 2000 <b class="num">64 ha</b></span></div>
+  <p class="xs muted">Aus dem ELAISA-Export und der Ackerschlagkartei vom 27.04.2026</p></section>
+ <section class="pf-sec"><h2>Was wir über Ihren Betrieb wissen</h2><p class="small muted">Jede Angabe mit Herkunft und den Förderungen, für die sie zählt.</p>
+  <div class="lg-row lg-h"><span>Angabe</span><span>Wert</span><span>Herkunft</span><span>zählt für</span><span></span></div>
+  ${PF.map(([g,rows])=>`<div class="lg-g">${g}</div>${rows.map(row).join('')}`).join('')}</section>
+ <div class="pf-two"><section class="pf-sec"><h2>Woher die Daten kommen</h2><ol class="tline">
+  <li><b>28.04.2026</b><span>4 Bescheide gelesen · Fristen und Auflagen übernommen</span></li>
+  <li><b>27.04.2026</b><span>Flächen aus dem ELAISA-Export · 148 Schläge</span></li>
+  <li><b>27.04.2026</b><span>Tierbestand aus der HIT-Datenbank · 86 Mutterkühe</span></li>
+  <li><b>27.04.2026</b><span>Anbauplanung aus der Ackerschlagkartei · 6 Kulturen</span></li>
+  <li class="tl-next"><b>Mai 2026</b><span>Empfohlen: Flächen nach Abgabe des Sammelantrags neu exportieren</span></li></ol></section>
+ <section class="pf-sec"><h2>Was das Profil nicht enthält</h2><ul class="nolist">${['Bankverbindung','Betriebsnummer und Zugangsdaten zu ELAISA','Daten anderer Betriebe oder der Landberatung'].map(t=>`<li>${ic('x')}${t}</li>`).join('')}</ul><p class="small muted">Diese Angaben braucht keine Funktion der Plattform. Für Anfragen ans Amt tragen Sie die Betriebsnummer selbst ein.</p></section></div>
+ </div>`};
 
 /* ================= Router ================= */
 const ROUTES=Object.keys(V);
-function route(){if(!S.logged)return;let v=(location.hash||'').slice(1);if(!ROUTES.includes(v))v=S.obDone?'start':'profil';
+function route(){if(!S.logged)return;let v=(location.hash||'').slice(1);if(!ROUTES.includes(v))v=S.obDone?'start':'einrichtung';if(!S.obDone)v='einrichtung';
+ document.body.classList.toggle('setup',v==='einrichtung');
  S.view=v;$('#view').innerHTML=V[v]();after(v);
  $$('#nav a, #tabbar a, .sfoot a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='anfrage'&&a.dataset.v==='fragen')));
- $('#fab').style.display=['fragen','anfrage','profil','antrag'].includes(v)?'none':'';
+ $('#fab').style.display=['fragen','anfrage','einrichtung','antrag'].includes(v)?'none':'';
  closeAll();window.scrollTo(0,0)}
 function after(v){
  if(v==='suche'){const k=$('#kw');k.addEventListener('input',()=>{S.kw=k.value;const pos=k.selectionStart;route();const n=$('#kw');n.focus();n.setSelectionRange(pos,pos)})}
@@ -666,7 +757,7 @@ const ACT={
  cp:(v,b)=>{try{navigator.clipboard.writeText(v)}catch(e){}const o=b.innerHTML;b.innerHTML=ic('check')+' Kopiert';setTimeout(()=>b.innerHTML=o,1400)},
  cpall:(v,b)=>{const t=$$('.frow').map(r=>r.children[0].textContent+': '+r.children[1].textContent).join('\n');ACT.cp(t,b)},
  addalt:()=>{if(!S.extra.find(d=>d.id==='alt'))S.extra.push({id:'alt',lvl:'g',t:'Altgrasstreifen auf Schlag 24 stehen lassen',d:'ÖR 1d · keine Mahd oder Beweidung vor dem 01.09.',date:'01.09.',doy:244,go:'meine',s:['Merkblatt Öko-Regelungen 2026','ÖR 1d']});S.saisonDone.add('s9');location.hash='start';snack('Frist und Auflage stehen jetzt in Ihrer Übersicht.')},
- obn:()=>{if(S.ob<2){S.ob++;route()}else{S.obDone=true;location.hash='start'}},obb:()=>{S.ob--;route()},
+ obn:()=>{if(S.ob<2){S.ob++;route()}else{S.obDone=true;try{localStorage.setItem('fl_setup','1')}catch(e){}location.hash='start';snack('Eingerichtet. Ihre Daten finden Sie ab jetzt unter „Betriebsprofil“.')}},obb:()=>{S.ob--;route()},
  wtadd:()=>{const e={von:$('#wvon').value||'29.04.',bis:$('#wbis').value,k:+$('#wk').value||0,c:+$('#wc').value||0};if(WT.length&&!WT[WT.length-1].bis)WT[WT.length-1].bis='28.04.';WT.push(e);route();snack('Weidegang eingetragen.')},
  wtexp:()=>modal(`<div class="row between"><h2>Export für das Amt</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><p class="small muted" style="margin:.4rem 0 1rem">Weidetagebuch 2026 · Schlag 17 · im Format der Vorlage des ALFF</p><div class="tw"><table class="t"><thead><tr><th>Zeitraum</th><th>Tiere</th><th>GVE/ha</th></tr></thead><tbody>${WT.map(e=>`<tr><td>${e.von} – ${e.bis||'laufend'}</td><td>${e.k} Kühe, ${e.c} Kälber</td><td>${wtCalc(e).toFixed(2).replace('.',',')}</td></tr>`).join('')}</tbody></table></div><div class="box undec small" style="margin-top:1rem">1 Eintrag mit Hinweis. Bitte vor der Abgabe prüfen.</div><div class="row" style="margin-top:1rem"><button class="btn" data-a="snackv" data-v="PDF erstellt (im Klick-Dummy nur angedeutet).">${ic('file')} PDF erstellen</button><span class="tag demo">Beispielvorlage</span></div>`),
  dtab:v=>{S.docTab=v;route()},
@@ -683,6 +774,10 @@ const ACT={
  sent:()=>{S.anfragen.unshift({t:S.aq.topic,to:S.aq.to,st:'Antwort ausstehend',d:'28.04.'});S.aq.draft=false;location.hash='fragen';snack('Anfrage abgelegt. Wir erinnern Sie, wenn nach 10 Tagen keine Antwort da ist.')},
  ans:v=>{S.anfragen[+v].st='Antwort abgelegt';S.anfragen[+v].ans='Antwort des Amts (im Klick-Dummy nicht hinterlegt).';route()},
  qa:v=>ask(+v),
+ pfedit:v=>{const r=PF.flatMap(g=>g[1]).find(x=>x[0]===v);const cur=S.pf[v]??r[2];modal(`<div class="row between"><h2>${r[1]} ändern</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><p class="small muted" style="margin:.4rem 0 1rem">Bisher: ${cur} · Quelle: ${r[3]}</p>${v==='mk'?`<label class="f">Anzahl Mutterkühe<input class="inp" id="pfIn" type="number" value="${S.mk}" min="0"></label>`:`<label class="f">Neuer Wert<input class="inp" id="pfIn" value="${esc(cur)}"></label>`}<p class="small muted" style="margin-top:.8rem">Nach dem Speichern prüfen wir alle Förderungen neu, die diese Angabe nutzen: ${r[5].join(', ')}.</p><div class="row" style="margin-top:1rem"><button class="btn pri" data-a="pfsave" data-v="${v}">Speichern und neu prüfen</button><button class="btn ghost" data-a="close">Abbrechen</button></div>`)},
+ pfsave:v=>{const val=$('#pfIn').value.trim();const r=PF.flatMap(g=>g[1]).find(x=>x[0]===v);if(v==='mk'){const n=Math.max(0,parseInt(val)||0);S.mk=n;S.pf.mk=n+' Tiere';const z=F.find(f=>f.id==='zmk');z.amt='ca. '+fmt(Math.round(n*85/100)*100)+' €';z.unit='im Jahr · rund 85 € je Tier · '+n+' Tiere';z.why[0][1]=n+' Mutterkühe in der HIT-Datenbank gemeldet';S.pfNote='Neu geprüft: Zahlung für Mutterkühe jetzt '+z.amt+' im Jahr.'}else{S.pf[v]=esc(val);S.pfNote='Neu geprüft: '+r[5].join(', ')+'. Keine Änderung am Ergebnis.'}S.pfNew=v;closeAll();route()},
+ pfup:()=>modal(`<div class="row between"><h2>Neue Datei hochladen</h2><button class="iconbtn" data-a="close" aria-label="Schließen">${ic('x')}</button></div><div class="drop stack" style="align-items:center;margin-top:1rem">${ic('up','width:28px;height:28px')}<b>Export ablegen</b><span class="small muted">ELAISA-Flächen (SHP), HIT-Auszug (CSV), Schlagkartei (XLS) oder ein Bescheid (PDF)</span></div><p class="small muted" style="margin-top:1rem">Wir zeigen Ihnen danach nur, was sich gegenüber dem bisherigen Stand geändert hat, und Sie bestätigen die Änderungen.</p><span class="tag demo">Im Klick-Dummy nicht hinterlegt</span>`),
+ reset:()=>{try{localStorage.removeItem('fl_setup')}catch(e){}S.obDone=false;S.ob=0;location.hash='einrichtung';route()},
  rem:v=>{S.rem[v]=!S.rem[v];route()},
  lead:v=>{v=+v;S.lead.has(v)?S.lead.delete(v):S.lead.add(v);route()},
  big:()=>{S.big=!S.big;document.documentElement.classList.toggle('big',S.big);route()},
@@ -691,7 +786,7 @@ const ACT={
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const f=ACT[a.dataset.a];if(!f)return;if(a.tagName==='A'||a.dataset.a!=='go')e.preventDefault();f(a.dataset.v,a,e)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();$('#toast').classList.remove('in')}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&S.logged){e.preventDefault();ACT.quick()}});
 window.addEventListener('hashchange',route);
-$('#loginForm').addEventListener('submit',e=>{e.preventDefault();S.logged=true;$('#login').style.display='none';$('#app').style.display='grid';$('#tabbar').style.removeProperty('display');location.hash='profil';route()});
+$('#loginForm').addEventListener('submit',e=>{e.preventDefault();S.logged=true;$('#login').style.display='none';$('#app').style.display='grid';$('#tabbar').style.removeProperty('display');location.hash=S.obDone?'start':'einrichtung';route()});
 
 </script>
 </body>
