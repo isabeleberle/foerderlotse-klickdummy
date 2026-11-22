@@ -56,12 +56,12 @@ h3{font-size:1rem;font-weight:650}
 .orig .src{color:var(--ink)}
 .orig button{color:var(--pri);font-weight:600;font-size:.8rem}
 /* Login */
-#login{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
-.lg-art{background:var(--side);color:#fff;padding:3rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+#login{height:100vh;height:100dvh;min-height:540px;display:grid;grid-template-columns:1.05fr 1fr;overflow:hidden}
+.lg-art{background:var(--side);color:#fff;padding:2rem 3rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;min-height:0}
 .lg-art h1{font-size:2.9rem;max-width:12ch;line-height:1.05}
 .lg-art p{color:var(--sideT);max-width:42ch;font-size:1.05rem}
 .furrows{position:absolute;right:-80px;bottom:-60px;width:520px;opacity:.9}
-.lg-form{display:grid;place-items:center;padding:2rem}
+.lg-form{display:grid;place-items:center;padding:2rem;overflow:auto}
 .lg-form form{width:min(400px,100%);display:flex;flex-direction:column;gap:1rem}
 label.f{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:.9rem}
 .inp{width:100%;border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem;background:#fff;min-height:46px}
@@ -84,11 +84,13 @@ label.f{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.pc,.fur{animation:none;stroke-dashoffset:0}.lg-chip{animation:none;opacity:1}.lg-art h1,.lg-art .stack p{animation:none}.tok{display:none}}
 
-.lg-art{gap:1.4rem}
-.lg-art h1{font-size:2.5rem;max-width:20ch}
-.film{position:relative;z-index:1;width:100%;max-width:620px;aspect-ratio:600/380;border-radius:18px;overflow:hidden;background:#122219;border:1px solid #2A4235;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.lg-art{gap:1.1rem}
+.lg-art h1{font-size:clamp(1.8rem,3.2vh + .6vw,2.5rem);max-width:20ch}
+.lg-art .stack{gap:.8rem!important}
+.lg-art .stack p{font-size:clamp(.9rem,1.6vh,1.05rem)}
+.film{position:relative;z-index:1;flex:none;height:min(392px,calc(100vh - 380px),calc((100vw * .512 - 6rem) * .633));height:min(392px,calc(100dvh - 380px),calc((100vw * .512 - 6rem) * .633));min-height:200px;width:auto;max-width:100%;aspect-ratio:600/380;border-radius:18px;overflow:hidden;background:#122219;border:1px solid #2A4235;box-shadow:0 30px 60px rgba(0,0,0,.35)}
 .film svg{width:100%;height:100%;display:block}
-.film *{animation-duration:14s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.film *{animation-duration:8s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
 .film.paused *{animation-play-state:paused!important}
 .sa{animation-name:sceneA}@keyframes sceneA{0%,45%{opacity:1}52%,96%{opacity:0}100%{opacity:1}}
 .sb{opacity:0;animation-name:sceneB}@keyframes sceneB{0%,50%{opacity:0}58%,95%{opacity:1}100%{opacity:0}}
@@ -385,7 +387,22 @@ body.setup main{margin:0 auto;max-width:820px;padding-top:2.5rem}
  #tabbar a svg{width:23px;height:23px}
  #tabbar a.on{color:#fff}#tabbar a.on svg{color:var(--lime)}
  #fab{display:none}
- #login{grid-template-columns:1fr}.lg-art{min-height:auto;padding:2rem}.lg-art h1{font-size:2.1rem}.lg-anim{display:none}
+ #login{grid-template-columns:1fr;grid-template-rows:auto 1fr;min-height:0}
+ .lg-art{padding:.9rem 1.1rem .8rem;gap:.6rem;justify-content:flex-start}
+ .lg-art .brand{font-size:1.05rem}.lg-art .brand svg{width:28px;height:28px}
+ .lg-art h1{font-size:1.3rem;max-width:none}
+ .lg-art .stack p,.lg-art>p.xs{display:none}
+ .film{height:auto;width:100%;max-height:30dvh;min-height:0;border-radius:14px;align-self:center}
+ .film{width:min(100%,calc(30dvh * 1.58))}
+ .lg-form{padding:.9rem 1.1rem 1rem;place-items:start center}
+ .lg-form form{gap:.55rem}
+ .lg-form h1{font-size:1.25rem!important}
+ .lg-form label.f{font-size:.82rem;gap:.2rem}
+ .lg-form .inp{min-height:42px;padding:.5rem .75rem}
+ .lg-form .box{display:none}
+ .lg-form .btn{min-height:46px!important}
+ .lg-form .xs{font-size:.7rem}
+ .f-pp{width:28px;height:28px}
  .prog .body{grid-template-columns:1fr}
  .phase{grid-template-columns:1fr;gap:.4rem}
  .frow{grid-template-columns:1fr auto}.frow span{grid-column:1/-1}
@@ -402,6 +419,7 @@ body.setup main{margin:0 auto;max-width:820px;padding-top:2.5rem}
  .tl .m{font-size:.62rem}
 }
 @media (min-width:901px){.deskhide{display:none!important}}
+@media (min-width:600px) and (max-width:900px){.film{max-height:40dvh!important;width:min(100%,calc(40dvh * 1.58))!important}.lg-art{padding:1.4rem 2rem 1.2rem}.lg-art h1{font-size:1.8rem}.lg-form{place-items:center}}
 </style>
 </head>
 <body>
@@ -449,7 +467,7 @@ body.setup main{margin:0 auto;max-width:820px;padding-top:2.5rem}
  </div>
  <div class="lg-form">
   <form id="loginForm">
-   <div><h1 style="font-size:1.6rem">Anmelden</h1><p class="muted small">Die Testzugangsdaten sind bereits eingetragen.</p></div>
+   <div><h1 style="font-size:1.6rem">Anmelden</h1><p class="muted small">Die Testzugangsdaten sind bereits eingetragen: test@agrar-musterhof.example · demo2026</p></div>
    <label class="f">E-Mail-Adresse<input class="inp" value="test@agrar-musterhof.example" autocomplete="off"></label>
    <label class="f">Passwort<input class="inp" type="password" value="demo2026"></label>
    <div class="box sun small"><b>Testzugang:</b> test@agrar-musterhof.example · demo2026</div>
@@ -951,7 +969,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();palClose
 window.addEventListener('hashchange',route);
 $('#loginForm').addEventListener('submit',e=>{e.preventDefault();S.logged=true;$('#login').style.display='none';$('#app').style.display='grid';$('#tabbar').style.removeProperty('display');location.hash=S.obDone?'start':'einrichtung';route()});
 /* ================= Kurzfilm Anmeldeseite ================= */
-(function(){const film=$('#film');if(!film)return;const D=14000;let t0=performance.now(),off=0,pAt=null;
+(function(){const film=$('#film');if(!film)return;const D=8000;let t0=performance.now(),off=0,pAt=null;
  const tEl=$('#clkT'),lEl=$('#clkL'),box=tEl.parentElement;
  function tick(){const now=pAt??performance.now();const ph=(((now-t0-off)%D)+D)%D/D;
   if(ph<.45){const m=16*60+30+Math.round(ph/.45*420);tEl.textContent=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');lEl.textContent='noch im Büro';box.classList.remove('done')}
